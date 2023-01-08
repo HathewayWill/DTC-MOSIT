@@ -14,7 +14,7 @@ This is a BASH script that provides options to install the following DTC package
 - (Make sure to download folder into your Home Directory): $HOME
 
 
-> git clone (insert link here)
+> git clone https://github.com/HathewayWill/DTC-MASTER.git
 
 > cd $HOME/DTC-MASTER
 
