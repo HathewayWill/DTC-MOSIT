@@ -35,7 +35,7 @@ if [ "$SYSTEMOS" = "Linux" ]; then
    export YUM=$(command -v yum)
     if [ "$YUM" != "" ]; then
    echo " yum found"
-   read -p "Your system is a CentOS based system which is not compatible with this script"
+   read -r -p "Your system is a CentOS based system which is not compatible with this script"
    exit ;
     fi
 
@@ -62,7 +62,7 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ];
   then
     echo "Your system is 64bit version of Debian Linux Kernal"
     echo " "
-  while read -p "Which compiler do you want to use?
+  while read -r -p "Which compiler do you want to use?
   - Intel
   - GNU
 
@@ -208,7 +208,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   export USE_MODULES=FALSE
   export MET_PYTHON=/opt/intel/oneapi/intelpython/python${PYTHON_VERSION_COMBINED}
   export MET_PYTHON_CC=-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}
-  export MET_PYTHON_LD=-L${MET_PYTHON}/lib/python${PYTHON_VERSION_COMBINED}/config-${PYTHON_VERSION_COMBINED}-x86_64-linux-gnu\ -L${MET_PYTHON}/lib\ -lpython${PYTHON_VERSION_COMBINED}\ -lcrypt\ -lpthread\ -ldl\ -lm\ -lm  #investigate -lutil
+  export MET_PYTHON_LD=-L${MET_PYTHON}/lib/python${PYTHON_VERSION_COMBINED}/config-${PYTHON_VERSION_COMBINED}-x86_64-linux-gnu\ -L${MET_PYTHON}/lib\ -lpython${PYTHON_VERSION_COMBINED}\ -lcrypt\ -lpthread -r\ -ldl\ -lm\ -lm  #investigate -lutil
   export SET_D64BIT=FALSE
 
 
@@ -269,7 +269,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   $DTC_FOLDER/METplus-5.0.0/ush/run_metplus.py -c $DTC_FOLDER/METplus-5.0.0/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
   export PATH=$DTC_FOLDER/METplus-5.0.0/ush:$PATH
   echo " "
-  read -t 5 -p "MET and METPLUS sucessfully installed with intel compilers"
+  read -r -t 5 -p "MET and METPLUS sucessfully installed with intel compilers"
 
 fi
 
@@ -361,7 +361,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
   export USE_MODULES=FALSE
   export MET_PYTHON=/usr
   export MET_PYTHON_CC=-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}
-  export MET_PYTHON_LD=-L${MET_PYTHON}/lib/python${PYTHON_VERSION_COMBINED}/config-${PYTHON_VERSION_COMBINED}-x86_64-linux-gnu\ -L${MET_PYTHON}/lib\ -lpython${PYTHON_VERSION_COMBINED}\ -lcrypt\ -lpthread\ -ldl\ -lutil\ -lm
+  export MET_PYTHON_LD=-L${MET_PYTHON}/lib/python${PYTHON_VERSION_COMBINED}/config-${PYTHON_VERSION_COMBINED}-x86_64-linux-gnu\ -L${MET_PYTHON}/lib\ -lpython${PYTHON_VERSION_COMBINED}\ -lcrypt\ -lpthread -r\ -ldl\ -lutil\ -lm
   export SET_D64BIT=FALSE
 
 
@@ -421,7 +421,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   export PATH=$DTC_FOLDER/METplus-5.0.0/ush:$PATH
 
-  read -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
+  read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
 
 fi
 
