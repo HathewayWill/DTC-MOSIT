@@ -100,6 +100,23 @@ if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "Linux" ]; then
 fi
 
 
+############################# Enter sudo users information #############################
+echo "-------------------------------------------------- "
+while true; do
+  echo " "
+  read -r -p "
+  Password is only save locally and will not be seen when typing.
+  Please enter your sudo password:
+
+  " yn
+  export PASSWD=$yn
+  echo "-------------------------------------------------- "
+  break
+done
+
+echo " "
+echo "Beginning Installation"
+echo " "
 
 
 
@@ -108,8 +125,8 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
 
 
-  sudo apt -y update
-  sudo apt -y upgrade
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
 
   # download the key to system keyring; this and the following echo command are
   # needed in order to install the Intel compilers
@@ -121,13 +138,13 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
 
   # this update should get the Intel package info from the Intel repository
-  sudo apt -y update
-  sudo apt -y upgrade
-  sudo apt -y install python3 python3-dev emacs flex bison libpixman-1-dev libjpeg-dev pkg-config libpng-dev unzip python2 python2-dev python3-pip pipenv gcc gfortran g++ libtool automake autoconf make m4 default-jre default-jdk csh ksh git libncurses5 libncurses6 mlocate pkg-config build-essential curl libcurl4-openssl-dev
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
+  echo $PASSWD | sudo -S apt -y install python3 python3-dev emacs flex bison libpixman-1-dev libjpeg-dev pkg-config libpng-dev unzip python2 python2-dev python3-pip pipenv gcc gfortran g++ libtool automake autoconf make m4 default-jre default-jdk csh ksh git libncurses5 libncurses6 mlocate pkg-config build-essential curl libcurl4-openssl-dev
 
   # install the Intel compilers
-  sudo apt -y install intel-basekit intel-hpckit intel-aikit
-  sudo apt -y update
+  echo $PASSWD | sudo -S apt -y install intel-basekit intel-hpckit intel-aikit
+  echo $PASSWD | sudo -S apt -y update
 
 
   # make sure some critical packages have been installed
@@ -223,8 +240,8 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
 #Basic Package Management for Model Evaluation Tools (METplus)
 
-  sudo apt-get -y update
-  sudo apt-get -y upgrade
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
 
 
 
@@ -281,9 +298,9 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
 
   #############################basic package managment############################
-  sudo apt -y update
-  sudo apt -y upgrade
-  sudo apt -y install python3 python3-dev emacs flex bison libpixman-1-dev libjpeg-dev pkg-config libpng-dev unzip python2 python2-dev python3-pip pipenv gcc gfortran g++ libtool automake autoconf make m4 default-jre default-jdk csh ksh git libncurses5 libncurses6 mlocate pkg-config build-essential curl libcurl4-openssl-dev
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
+  echo $PASSWD | sudo -S apt -y install python3 python3-dev emacs flex bison libpixman-1-dev libjpeg-dev pkg-config libpng-dev unzip python2 python2-dev python3-pip pipenv gcc gfortran g++ libtool automake autoconf make m4 default-jre default-jdk csh ksh git libncurses5 libncurses6 mlocate pkg-config build-essential curl libcurl4-openssl-dev
 
   #Downloading latest dateutil due to python3.8 running old version.
   pip3 install python-dateutil==2.8
@@ -375,8 +392,8 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   #basic Package Management for Model Evaluation Tools (METplus)
 
-  sudo apt-get -y update
-  sudo apt-get -y upgrade
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
 
 
 

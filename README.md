@@ -46,6 +46,6 @@ Click here!
 - DTC's Julie P., Tara J., George M., & John H.
 ---
 #### Citation:
-#### Hatheway, W. (2023). DTC MET Install Script (Version 1.0) [Computer software]
+#### Hatheway, W. (2023). DTC MET Install Script (Version 1.0.1) [Computer software]
 
 
