@@ -1,4 +1,4 @@
-### DTC Suite Master Script
+### DTC Multi Operational System Install Toolkit
 This is a BASH script that provides options to install the following DTC packages in 64-bit systems:
 
 - MET v11.0.0
@@ -20,7 +20,7 @@ This is a BASH script that provides options to install the following DTC package
 
 > chmod 775 *.sh
 >
-> ./DTC_Master_Script.sh
+> ./DTC_MOSIT.sh
 
 - Script will check for System Architecture Type and Storage Space requirements.
 
