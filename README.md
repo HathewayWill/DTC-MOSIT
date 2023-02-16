@@ -1,4 +1,4 @@
-### DTC Multi Operational System Install Toolkit
+### DTC Suite Multi Operational System Install Toolkit
 This is a BASH script that provides options to install the following DTC packages in 64-bit systems:
 
 - MET v11.0.0
@@ -14,9 +14,9 @@ This is a BASH script that provides options to install the following DTC package
 - (Make sure to download folder into your Home Directory): $HOME
 
 
-> git clone https://github.com/HathewayWill/DTC-MASTER.git
+> git clone https://github.com/HathewayWill/DTC-MOSIT.git
 
-> cd $HOME/DTC-MASTER
+> cd $HOME/DTC-MOSIT
 
 > chmod 775 *.sh
 >
@@ -41,11 +41,9 @@ Click here!
 
 ---
 ### Special thanks to:
-- Youtube's meteoadriatic 
+- Youtube's meteoadriatic
 - GitHub user jamal919
 - DTC's Julie P., Tara J., George M., & John H.
 ---
 #### Citation:
-#### Hatheway, W. (2023). DTC MET Install Script (Version 1.0.1) [Computer software]
-
-
+#### Hatheway, W. (2023). DTC MET Multi Operational System Install Toolkit (Version 1.1) [Computer software]
