@@ -1,5 +1,3 @@
-<a href="https://info.flagcounter.com/OuSc"><img src="https://s11.flagcounter.com/countxl/OuSc/bg_FFFFFF/txt_000000/border_CCCCCC/columns_8/maxflags_250/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a>
-
 ### DTC Suite Multi Operational System Install Toolkit
 This is a BASH script that provides options to install the following DTC packages in 64-bit systems:
 
