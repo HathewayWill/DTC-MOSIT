@@ -177,31 +177,31 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   mkdir $HOME/DTC
   export DTC_FOLDER=$HOME/DTC
-  mkdir $DTC_FOLDER/MET-11.0.0
-  mkdir $DTC_FOLDER/MET-11.0.0/Downloads
-  mkdir $DTC_FOLDER/METplus-5.0.0
-  mkdir $DTC_FOLDER/METplus-5.0.0/Downloads
+  mkdir $DTC_FOLDER/MET-11.0.2
+  mkdir $DTC_FOLDER/MET-11.0.2/Downloads
+  mkdir $DTC_FOLDER/METplus-5.0.1
+  mkdir $DTC_FOLDER/METplus-5.0.1/Downloads
 
 
 
   #Downloading MET and untarring files
   #Note weblinks change often update as needed.
-  cd $DTC_FOLDER/MET-11.0.0/Downloads
+  cd $DTC_FOLDER/MET-11.0.2/Downloads
   wget -c -4 https://raw.githubusercontent.com/dtcenter/MET/main_v11.0/internal/scripts/installation/compile_MET_all.sh
 
   wget -c -4 https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-  wget -c -4 https://github.com/dtcenter/MET/archive/refs/tags/v11.0.0.tar.gz
+  wget -c -4 https://github.com/dtcenter/MET/archive/refs/tags/v11.0.2.tar.gz
 
 
-  cp compile_MET_all.sh $DTC_FOLDER/MET-11.0.0
-  tar -xvzf tar_files.tgz -C $DTC_FOLDER/MET-11.0.0
-  cp v11.0.0.tar.gz $DTC_FOLDER/MET-11.0.0/tar_files
-  cd $DTC_FOLDER/MET-11.0.0
+  cp compile_MET_all.sh $DTC_FOLDER/MET-11.0.2
+  tar -xvzf tar_files.tgz -C $DTC_FOLDER/MET-11.0.2
+  cp v11.0.2.tar.gz $DTC_FOLDER/MET-11.0.2/tar_files
+  cd $DTC_FOLDER/MET-11.0.2
 
 
 
-  cd $DTC_FOLDER/MET-11.0.0
+  cd $DTC_FOLDER/MET-11.0.2
 
 
 
@@ -218,10 +218,10 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   export F77=ifort
   export F90=ifort
   export gcc_version=$(icc -dumpversion -diag-disable=10441)
-  export TEST_BASE=$DTC_FOLDER/MET-11.0.0
+  export TEST_BASE=$DTC_FOLDER/MET-11.0.2
   export COMPILER=intel_$gcc_version
   export MET_SUBDIR=${TEST_BASE}
-  export MET_TARBALL=v11.0.0.tar.gz
+  export MET_TARBALL=v11.0.2.tar.gz
   export USE_MODULES=FALSE
   export MET_PYTHON=/opt/intel/oneapi/intelpython/python${PYTHON_VERSION_COMBINED}
   export MET_PYTHON_CC=-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}
@@ -231,11 +231,11 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   chmod 775 compile_MET_all.sh
   # SED statement needed to fix bug in MET compile script.  Can be removed after bugfix
-  sed -i '426s|fi|export LIB_Z=${LIB_DIR}/lib \nfi|g' $DTC_FOLDER/MET-11.0.0/compile_MET_all.sh
+  sed -i '426s|fi|export LIB_Z=${LIB_DIR}/lib \nfi|g' $DTC_FOLDER/MET-11.0.2/compile_MET_all.sh
 
   ./compile_MET_all.sh
 
-  export PATH=$DTC_FOLDER/MET-11.0.0/bin:$PATH            #Add MET executables to path
+  export PATH=$DTC_FOLDER/MET-11.0.2/bin:$PATH            #Add MET executables to path
 
 
 #Basic Package Management for Model Evaluation Tools (METplus)
@@ -247,35 +247,35 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
 #Directory Listings for Model Evaluation Tools (METplus
 
-  mkdir $DTC_FOLDER/METplus-5.0.0
-  mkdir $DTC_FOLDER/METplus-5.0.0/Sample_Data
-  mkdir $DTC_FOLDER/METplus-5.0.0/Output
-  mkdir $DTC_FOLDER/METplus-5.0.0/Downloads
+  mkdir $DTC_FOLDER/METplus-5.0.1
+  mkdir $DTC_FOLDER/METplus-5.0.1/Sample_Data
+  mkdir $DTC_FOLDER/METplus-5.0.1/Output
+  mkdir $DTC_FOLDER/METplus-5.0.1/Downloads
 
 
 
 
 #Downloading METplus and untarring files
 
-  cd $DTC_FOLDER/METplus-5.0.0/Downloads
-  wget -c -4 https://github.com/dtcenter/METplus/archive/refs/tags/v5.0.0.tar.gz
-  tar -xvzf v5.0.0.tar.gz -C $DTC_FOLDER
+  cd $DTC_FOLDER/METplus-5.0.1/Downloads
+  wget -c -4 https://github.com/dtcenter/METplus/archive/refs/tags/v5.0.1.tar.gz
+  tar -xvzf v5.0.1.tar.gz -C $DTC_FOLDER
 
 
 
 # Insatlllation of Model Evaluation Tools Plus
-  cd $DTC_FOLDER/METplus-5.0.0/parm/metplus_config
+  cd $DTC_FOLDER/METplus-5.0.1/parm/metplus_config
 
-  sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $DTC_FOLDER/MET-11.0.0|" defaults.conf
-  sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $DTC_FOLDER/METplus-5.0.0/Sample_Data|" defaults.conf
-  sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $DTC_FOLDER/METplus-5.0.0/Output|" defaults.conf
+  sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $DTC_FOLDER/MET-11.0.2|" defaults.conf
+  sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $DTC_FOLDER/METplus-5.0.1/Sample_Data|" defaults.conf
+  sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $DTC_FOLDER/METplus-5.0.1/Output|" defaults.conf
 
 
 # Downloading Sample Data
 
-  cd $DTC_FOLDER/METplus-5.0.0/Downloads
+  cd $DTC_FOLDER/METplus-5.0.1/Downloads
   wget -c -4 https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v5.0/sample_data-met_tool_wrapper-5.0.tgz
-  tar -xvzf sample_data-met_tool_wrapper-5.0.tgz -C $DTC_FOLDER/METplus-5.0.0/Sample_Data
+  tar -xvzf sample_data-met_tool_wrapper-5.0.tgz -C $DTC_FOLDER/METplus-5.0.1/Sample_Data
 
 
 # Testing if installation of MET & METPlus was sucessfull
@@ -283,8 +283,8 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 # Then MET & METPLUS is sucessfully installed
 
   echo 'Testing MET & METPLUS Installation.'
-  $DTC_FOLDER/METplus-5.0.0/ush/run_metplus.py -c $DTC_FOLDER/METplus-5.0.0/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
-  export PATH=$DTC_FOLDER/METplus-5.0.0/ush:$PATH
+  $DTC_FOLDER/METplus-5.0.1/ush/run_metplus.py -c $DTC_FOLDER/METplus-5.0.1/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+  export PATH=$DTC_FOLDER/METplus-5.0.1/ush:$PATH
   echo " "
   read -r -t 5 -p "MET and METPLUS sucessfully installed with intel compilers"
 
@@ -311,29 +311,29 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   mkdir $HOME/DTC
   export DTC_FOLDER=$HOME/DTC
-  mkdir $DTC_FOLDER/MET-11.0.0
-  mkdir $DTC_FOLDER/MET-11.0.0/Downloads
-  mkdir $DTC_FOLDER/METplus-5.0.0
-  mkdir $DTC_FOLDER/METplus-5.0.0/Downloads
+  mkdir $DTC_FOLDER/MET-11.0.2
+  mkdir $DTC_FOLDER/MET-11.0.2/Downloads
+  mkdir $DTC_FOLDER/METplus-5.0.1
+  mkdir $DTC_FOLDER/METplus-5.0.1/Downloads
 
 
 
   #Downloading MET and untarring files
   #Note weblinks change often update as needed.
-  cd $DTC_FOLDER/MET-11.0.0/Downloads
+  cd $DTC_FOLDER/MET-11.0.2/Downloads
 
   wget -c -4 https://raw.githubusercontent.com/dtcenter/MET/main_v11.0/internal/scripts/installation/compile_MET_all.sh
 
   wget -c -4 https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-  wget -c -4 https://github.com/dtcenter/MET/archive/refs/tags/v11.0.0.tar.gz
+  wget -c -4 https://github.com/dtcenter/MET/archive/refs/tags/v11.0.2.tar.gz
 
 
 
-  cp compile_MET_all.sh $DTC_FOLDER/MET-11.0.0
-  tar -xvzf tar_files.tgz -C $DTC_FOLDER/MET-11.0.0
-  cp v11.0.0.tar.gz $DTC_FOLDER/MET-11.0.0/tar_files
-  cd $DTC_FOLDER/MET-11.0.0
+  cp compile_MET_all.sh $DTC_FOLDER/MET-11.0.2
+  tar -xvzf tar_files.tgz -C $DTC_FOLDER/MET-11.0.2
+  cp v11.0.2.tar.gz $DTC_FOLDER/MET-11.0.2/tar_files
+  cd $DTC_FOLDER/MET-11.0.2
 
 
 
@@ -344,7 +344,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
   export F77=/usr/bin/gfortran
   export CFLAGS="-fPIC -fPIE -O3"
 
-  cd $DTC_FOLDER/MET-11.0.0
+  cd $DTC_FOLDER/MET-11.0.2
   export GCC_VERSION=$(/usr/bin/gcc -dumpfullversion | awk '{print$1}')
   export GFORTRAN_VERSION=$(/usr/bin/gfortran -dumpfullversion | awk '{print$1}')
   export GPLUSPLUS_VERSION=$(/usr/bin/g++ -dumpfullversion | awk '{print$1}')
@@ -371,10 +371,10 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
   export F77=/usr/bin/gfortran
   export F90=/usr/bin/gfortran
   export gcc_version=$(gcc -dumpfullversion)
-  export TEST_BASE=$DTC_FOLDER/MET-11.0.0
+  export TEST_BASE=$DTC_FOLDER/MET-11.0.2
   export COMPILER=gnu_$gcc_version
   export MET_SUBDIR=${TEST_BASE}
-  export MET_TARBALL=v11.0.0.tar.gz
+  export MET_TARBALL=v11.0.2.tar.gz
   export USE_MODULES=FALSE
   export MET_PYTHON=/usr
   export MET_PYTHON_CC=-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}
@@ -384,11 +384,11 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   chmod 775 compile_MET_all.sh
   #SED statement needed to fix bug in MET compile script.  Can be removed after bugfix
-  sed -i '426s|fi|export LIB_Z=${LIB_DIR}/lib \nfi|g' $DTC_FOLDER/MET-11.0.0/compile_MET_all.sh
+  sed -i '426s|fi|export LIB_Z=${LIB_DIR}/lib \nfi|g' $DTC_FOLDER/MET-11.0.2/compile_MET_all.sh
 
   ./compile_MET_all.sh | tee compile_MET_all.log
 
-  export PATH=$DTC_FOLDER/MET-11.0.0/bin:$PATH
+  export PATH=$DTC_FOLDER/MET-11.0.2/bin:$PATH
 
   #basic Package Management for Model Evaluation Tools (METplus)
 
@@ -399,34 +399,34 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
 #Directory Listings for Model Evaluation Tools (METplus
 
-  mkdir $DTC_FOLDER/METplus-5.0.0
-  mkdir $DTC_FOLDER/METplus-5.0.0/Sample_Data
-  mkdir $DTC_FOLDER/METplus-5.0.0/Output
-  mkdir $DTC_FOLDER/METplus-5.0.0/Downloads
+  mkdir $DTC_FOLDER/METplus-5.0.1
+  mkdir $DTC_FOLDER/METplus-5.0.1/Sample_Data
+  mkdir $DTC_FOLDER/METplus-5.0.1/Output
+  mkdir $DTC_FOLDER/METplus-5.0.1/Downloads
 
 
 
 #Downloading METplus and untarring files
 
-  cd $DTC_FOLDER/METplus-5.0.0/Downloads
-  wget -c -4 https://github.com/dtcenter/METplus/archive/refs/tags/v5.0.0.tar.gz
-  tar -xvzf v5.0.0.tar.gz -C $DTC_FOLDER
+  cd $DTC_FOLDER/METplus-5.0.1/Downloads
+  wget -c -4 https://github.com/dtcenter/METplus/archive/refs/tags/v5.0.1.tar.gz
+  tar -xvzf v5.0.1.tar.gz -C $DTC_FOLDER
 
 
 
 # Insatlllation of Model Evaluation Tools Plus
-  cd $DTC_FOLDER/METplus-5.0.0/parm/metplus_config
+  cd $DTC_FOLDER/METplus-5.0.1/parm/metplus_config
 
-  sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $DTC_FOLDER/MET-11.0.0|" defaults.conf
-  sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $DTC_FOLDER/METplus-5.0.0/Sample_Data|" defaults.conf
-  sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $DTC_FOLDER/METplus-5.0.0/Output|" defaults.conf
+  sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $DTC_FOLDER/MET-11.0.2|" defaults.conf
+  sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $DTC_FOLDER/METplus-5.0.1/Sample_Data|" defaults.conf
+  sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $DTC_FOLDER/METplus-5.0.1/Output|" defaults.conf
 
 
 # Downloading Sample Data
 
-  cd $DTC_FOLDER/METplus-5.0.0/Downloads
+  cd $DTC_FOLDER/METplus-5.0.1/Downloads
   wget -c -4 https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v5.0/sample_data-met_tool_wrapper-5.0.tgz
-  tar -xvzf sample_data-met_tool_wrapper-5.0.tgz -C $DTC_FOLDER/METplus-5.0.0/Sample_Data
+  tar -xvzf sample_data-met_tool_wrapper-5.0.tgz -C $DTC_FOLDER/METplus-5.0.1/Sample_Data
 
 
 # Testing if installation of MET & METPlus was sucessfull
@@ -434,9 +434,9 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 # Then MET & METPLUS is sucessfully installed
 
   echo 'Testing MET & METPLUS Installation.'
-  $DTC_FOLDER/METplus-5.0.0/ush/run_metplus.py -c $DTC_FOLDER/METplus-5.0.0/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+  $DTC_FOLDER/METplus-5.0.1/ush/run_metplus.py -c $DTC_FOLDER/METplus-5.0.1/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-  export PATH=$DTC_FOLDER/METplus-5.0.0/ush:$PATH
+  export PATH=$DTC_FOLDER/METplus-5.0.1/ush:$PATH
 
   read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
 
