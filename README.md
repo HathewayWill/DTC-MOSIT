@@ -8,6 +8,7 @@ This is a BASH script that provides options to install the following DTC package
 - 64-bit system
     - Linux Debian Distro (Ubuntu, Mint, etc)
     - Windows Subsystem for Linux (Debian Distro, Ubuntu, Mint, etc)
+    - Darwin (MacOS) Intel Chipset
 
 
 ### Installation
