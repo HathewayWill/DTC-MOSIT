@@ -1,4 +1,10 @@
 #!/bin/bash
+export METPLUS_Version=5.1.0
+export MET_Version=11.1.0
+export MET_VERSION=11.1
+export METPLUS_DATA=5.1
+
+
 
 start=$(date)
 START=$(date +"%s")
@@ -244,31 +250,9 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] && [ "$DTC_MET" = "1" ]; then
 	pip3 install python-dateutil==2.8
 	pip3 install python-dateutil
 
-	#Directory Listings
-	if [ "$WRFCHEM_PICK" = "1" ]; then
-		mkdir $HOME/WRFCHEM_Intel
-		export WRF_FOLDER=$HOME/WRFCHEM_Intel
-	fi
+	mkdir $HOME/DTC
+  export WRF_FOLDER=$HOME/DTC
 
-	if [ "$WRFHYDRO_COUPLED_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_COUPLED_Intel
-		export WRF_FOLDER=$HOME/WRFHYDRO_COUPLED_Intel
-	fi
-
-	if [ "$WRF_PICK" = "1" ]; then
-		mkdir $HOME/WRF_Intel
-		export WRF_FOLDER=$HOME/WRF_Intel
-	fi
-
-	if [ "$HWRF_PICK" = "1" ]; then
-		mkdir $HOME/HWRF
-		export WRF_FOLDER=$HOME/HWRF
-	fi
-
-	if [ "$SFIRE_PICK" = "1" ]; then
-		mkdir $HOME/WRF_SFIRE_Intel
-		export WRF_FOLDER=$HOME/WRF_SFIRE_Intel
-	fi
 
 	mkdir $WRF_FOLDER/MET-$MET_Version
 	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
@@ -398,41 +382,9 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
 	pip3 install python-dateutil==2.8
 	pip3 install python-dateutil
 
-	#Directory Listings
-	if [ "$WRFCHEM_PICK" = "1" ]; then
-		mkdir $HOME/WRFCHEM
-		export WRF_FOLDER=$HOME/WRFCHEM
-	fi
+	mkdir $HOME/DTC
+  export WRF_FOLDER=$HOME/DTC
 
-	if [ "$WRFHYDRO_COUPLED_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_COUPLED
-		export WRF_FOLDER=$HOME/WRFHYDRO_COUPLED
-	fi
-
-	if [ "$WRFHYDRO_STANDALONE_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_STANDALONE
-		export WRF_FOLDER=$HOME/WRFHYDRO_STANDALONE
-	fi
-
-	if [ "$WRF_PICK" = "1" ]; then
-		mkdir $HOME/WRF
-		export WRF_FOLDER=$HOME/WRF
-	fi
-
-	if [ "$HWRF_PICK" = "1" ]; then
-		mkdir $HOME/HWRF
-		export WRF_FOLDER=$HOME/HWRF
-	fi
-
-	if [ "$CMAQ_PICK" = "1" ]; then
-		mkdir $HOME/WRF_CMAQ
-		export WRF_FOLDER=$HOME/WRF_CMAQ
-	fi
-
-	if [ "$SFIRE_PICK" = "1" ]; then
-		mkdir $HOME/WRF_SFIRE_Intel
-		export WRF_FOLDER=$HOME/WRF_SFIRE
-	fi
 
 	mkdir $WRF_FOLDER/MET-$MET_Version
 	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
@@ -579,36 +531,8 @@ if [ "$Centos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
 	echo $PASSWD | sudo -S dnf -y upgrade
 	echo " "
 
-	#Directory Listings
-	if [ "$WRFCHEM_PICK" = "1" ]; then
-		mkdir $HOME/WRFCHEM
-		export WRF_FOLDER=$HOME/WRFCHEM
-	fi
-
-	if [ "$WRFHYDRO_COUPLED_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_COUPLED
-		export WRF_FOLDER=$HOME/WRFHYDRO_COUPLED
-	fi
-
-	if [ "$WRFHYDRO_STANDALONE_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_STANDALONE
-		export WRF_FOLDER=$HOME/WRFHYDRO_STANDALONE
-	fi
-
-	if [ "$WRF_PICK" = "1" ]; then
-		mkdir $HOME/WRF
-		export WRF_FOLDER=$HOME/WRF
-	fi
-
-	if [ "$CMAQ_PICK" = "1" ]; then
-		mkdir $HOME/WRF_CMAQ
-		export WRF_FOLDER=$HOME/WRF_CMAQ
-	fi
-
-	if [ "$SFIRE_PICK" = "1" ]; then
-		mkdir $HOME/WRF_SFIRE_Intel
-		export WRF_FOLDER=$HOME/WRF_SFIRE
-	fi
+	mkdir $HOME/DTC
+	export WRF_FOLDER=$HOME/DTC
 
 	mkdir $WRF_FOLDER/MET-$MET_Version
 	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
@@ -759,37 +683,8 @@ if [ "$Centos_64bit_GNU" = "2" ] && [ "$DTC_MET" = "1" ]; then
 	source /opt/rh/rh-python38/enable
 	python3 -V
 	echo $PASSWD | sudo echo $PASSWD | sudo -S ./opt/rh/rh-python38/root/bin/pip3.8 install python-dateutil
-
-	#Directory Listings
-	if [ "$WRFCHEM_PICK" = "1" ]; then
-		mkdir $HOME/WRFCHEM
-		export WRF_FOLDER=$HOME/WRFCHEM
-	fi
-
-	if [ "$WRFHYDRO_COUPLED_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_COUPLED
-		export WRF_FOLDER=$HOME/WRFHYDRO_COUPLED
-	fi
-
-	if [ "$WRFHYDRO_STANDALONE_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_STANDALONE
-		export WRF_FOLDER=$HOME/WRFHYDRO_STANDALONE
-	fi
-
-	if [ "$WRF_PICK" = "1" ]; then
-		mkdir $HOME/WRF
-		export WRF_FOLDER=$HOME/WRF
-	fi
-
-	if [ "$CMAQ_PICK" = "1" ]; then
-		mkdir $HOME/WRF_CMAQ
-		export WRF_FOLDER=$HOME/WRF_CMAQ
-	fi
-
-	if [ "$SFIRE_PICK" = "1" ]; then
-		mkdir $HOME/WRF_SFIRE_Intel
-		export WRF_FOLDER=$HOME/WRF_SFIRE
-	fi
+	mkdir $HOME/DTC
+  export WRF_FOLDER=$HOME/DTC
 
 	mkdir $WRF_FOLDER/MET-$MET_Version
 	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
@@ -934,41 +829,8 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "Inte
 
 	pip3.10 install python-dateutil
 
-	#Directory Listings
-	if [ "$WRFCHEM_PICK" = "1" ]; then
-		mkdir $HOME/WRFCHEM
-		export WRF_FOLDER=$HOME/WRFCHEM
-	fi
-
-	if [ "$WRFHYDRO_COUPLED_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_COUPLED
-		export WRF_FOLDER=$HOME/WRFHYDRO_COUPLED
-	fi
-
-	if [ "$WRFHYDRO_STANDALONE_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_STANDALONE
-		export WRF_FOLDER=$HOME/WRFHYDRO_STANDALONE
-	fi
-
-	if [ "$WRF_PICK" = "1" ]; then
-		mkdir $HOME/WRF
-		export WRF_FOLDER=$HOME/WRF
-	fi
-
-	if [ "$HWRF_PICK" = "1" ]; then
-		mkdir $HOME/HWRF
-		export WRF_FOLDER=$HOME/HWRF
-	fi
-
-	if [ "$CMAQ_PICK" = "1" ]; then
-		mkdir $HOME/WRF_CMAQ
-		export WRF_FOLDER=$HOME/WRF_CMAQ
-	fi
-
-	if [ "$SFIRE_PICK" = "1" ]; then
-		mkdir $HOME/WRF_SFIRE_Intel
-		export WRF_FOLDER=$HOME/WRF_SFIRE
-	fi
+	mkdir $HOME/DTC
+	export WRF_FOLDER=$HOME/DTC
 
 	mkdir $WRF_FOLDER/MET-$MET_Version
 	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
@@ -1115,41 +977,8 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "ARM"
 
 	pip3.10 install python-dateutil
 
-	#Directory Listings
-	if [ "$WRFCHEM_PICK" = "1" ]; then
-		mkdir $HOME/WRFCHEM
-		export WRF_FOLDER=$HOME/WRFCHEM
-	fi
-
-	if [ "$WRFHYDRO_COUPLED_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_COUPLED
-		export WRF_FOLDER=$HOME/WRFHYDRO_COUPLED
-	fi
-
-	if [ "$WRFHYDRO_STANDALONE_PICK" = "1" ]; then
-		mkdir $HOME/WRFHYDRO_STANDALONE
-		export WRF_FOLDER=$HOME/WRFHYDRO_STANDALONE
-	fi
-
-	if [ "$WRF_PICK" = "1" ]; then
-		mkdir $HOME/WRF
-		export WRF_FOLDER=$HOME/WRF
-	fi
-
-	if [ "$HWRF_PICK" = "1" ]; then
-		mkdir $HOME/HWRF
-		export WRF_FOLDER=$HOME/HWRF
-	fi
-
-	if [ "$CMAQ_PICK" = "1" ]; then
-		mkdir $HOME/WRF_CMAQ
-		export WRF_FOLDER=$HOME/WRF_CMAQ
-	fi
-
-	if [ "$SFIRE_PICK" = "1" ]; then
-		mkdir $HOME/WRF_SFIRE_Intel
-		export WRF_FOLDER=$HOME/WRF_SFIRE
-	fi
+	mkdir $HOME/DTC
+	export WRF_FOLDER=$HOME/DTC
 
 	mkdir $WRF_FOLDER/MET-$MET_Version
 	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
