@@ -312,7 +312,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] && [ "$DTC_MET" = "1" ]; then
 
 	echo " "
 
-	#export MAKE_ARGS="-j $CPU_HALF_EVEN"
+	export MAKE_ARGS="-j 4"
 
 
 	chmod 775 compile_MET_all.sh
@@ -460,7 +460,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
 
 	echo " "
 
-	#export MAKE_ARGS="-j $CPU_HALF_EVEN"
+	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
@@ -597,7 +597,7 @@ if [ "$Centos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
 
 	echo " "
 
-	#export MAKE_ARGS="-j $CPU_HALF_EVEN"
+	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
@@ -749,7 +749,7 @@ if [ "$Centos_64bit_GNU" = "2" ] && [ "$DTC_MET" = "1" ]; then
 
 	echo " "
 
-	#export MAKE_ARGS="-j $CPU_HALF_EVEN"
+	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
@@ -903,7 +903,7 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "Inte
 
 	echo " "
 
-	#export MAKE_ARGS="-j $CPU_HALF_EVEN"
+	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
@@ -1067,7 +1067,7 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "ARM"
 
 	echo " "
 
-	#export MAKE_ARGS="-j $CPU_HALF_EVEN"
+	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
