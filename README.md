@@ -1,8 +1,8 @@
 ### DTC Suite Multi Operational System Install Toolkit
 This is a BASH script that provides options to install the following DTC packages in 64-bit systems:
 
-- MET v11.2.0
-- METplus v5.2
+- MET v11.1.0
+- METplus v5.1
 ---
 ### System Requirements
 - 64-bit system
