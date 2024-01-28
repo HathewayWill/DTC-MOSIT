@@ -197,7 +197,7 @@ echo " "
 ###################################################################################################
 
 
-if [ "$Ubuntu_64bit_Intel" = "1" ] && [ "$DTC_MET" = "1" ]; then
+if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 
 	echo $PASSWD | sudo -S sudo apt install git
 	echo "MET INSTALLING"
@@ -363,7 +363,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] && [ "$DTC_MET" = "1" ]; then
 	read -r -t 5 -p "MET and METPLUS sucessfully installed with intel compilers"
 fi
 
-if [ "$Ubuntu_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
+if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
 	echo $PASSWD | sudo -S sudo apt install git
 	echo "MET INSTALLING"
@@ -510,7 +510,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
 	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
 fi
 
-if [ "$Centos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
+if [ "$Centos_64bit_GNU" = "1" ] ; then
 	export HOME=$(
 		cd
 		pwd
@@ -647,7 +647,7 @@ if [ "$Centos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ]; then
 	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
 fi
 
-if [ "$Centos_64bit_GNU" = "2" ] && [ "$DTC_MET" = "1" ]; then
+if [ "$Centos_64bit_GNU" = "2" ] ; then
 
 	echo $PASSWD | sudo -S sudo dnf install git
 
@@ -799,7 +799,7 @@ if [ "$Centos_64bit_GNU" = "2" ] && [ "$DTC_MET" = "1" ]; then
 	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
 fi
 
-if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "Intel" ]; then
+if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "Intel" ]; then
 	echo "MET INSTALLING"
 	brew install wget
 	brew install git
@@ -947,7 +947,7 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "Inte
 	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
 fi
 
-if [ "$macos_64bit_GNU" = "1" ] && [ "$DTC_MET" = "1" ] && [ "$MAC_CHIP" = "ARM" ]; then
+if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "ARM" ]; then
 	echo "MET INSTALLING"
 	brew install wget
 	brew install git
