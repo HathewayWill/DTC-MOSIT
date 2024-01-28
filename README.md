@@ -10,10 +10,15 @@ This is a BASH script that provides options to install the following DTC package
     - Windows Subsystem for Linux (Debian Distro, Ubuntu, Mint, etc)
     - Linux Fedora Distro
     - MacOS
+    - 
+### MacOS Installation
+- Make sure to download and Homebrew before moving to installation.
+> /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
 
 
 ### Installation
-- (Make sure to download folder into your Home Directory): $HOME
+- (Make sure to download folder into your Home Directory): cd $HOME
 
 
 > git clone https://github.com/HathewayWill/DTC-MOSIT.git
