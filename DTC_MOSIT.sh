@@ -1,7 +1,7 @@
 #!/bin/bash
 export METPLUS_Version=5.1.0
-export MET_Version=11.1.0
-export MET_VERSION=11.1
+export met_Version_number=11.1.0
+export met_VERSION_number=11.1
 export METPLUS_DATA=5.1
 
 
@@ -254,26 +254,26 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
   export WRF_FOLDER=$HOME/DTC
 
 
-	mkdir $WRF_FOLDER/MET-$MET_Version
-	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
+	mkdir $WRF_FOLDER/MET-$met_Version_number
+	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$MET_Version/Downloads
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$MET_VERSION/internal/scripts/installation/compile_MET_all.sh
+	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$MET_Version.tar.gz
+	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$MET_Version
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$MET_Version
-	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
-	cd $WRF_FOLDER/MET-$MET_Version
+	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
+	cd $WRF_FOLDER/MET-$met_Version_number
 
-	cd $WRF_FOLDER/MET-$MET_Version
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(/opt/intel/oneapi/intelpython/latest/bin/python3 -V 2>&1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -286,10 +286,10 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	export F77=ifort
 	export F90=ifort
 	export gcc_version=$(icc -dumpversion -diag-disable=10441)
-	export TEST_BASE=$WRF_FOLDER/MET-$MET_Version
+	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
 	export COMPILER=intel_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$MET_Version.tar.gz
+	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/opt/intel/oneapi/intelpython/python${PYTHON_VERSION_COMBINED}
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
@@ -319,7 +319,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$MET_Version/bin:$PATH #Add MET executables to path
+	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH #Add MET executables to path
 
 	#Basic Package Management for Model Evaluation Tools (METplus)
 
@@ -342,7 +342,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	# Insatlllation of Model Evaluation Tools Plus
 	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$MET_Version|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
 	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
 	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
 
@@ -386,25 +386,25 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
   export WRF_FOLDER=$HOME/DTC
 
 
-	mkdir $WRF_FOLDER/MET-$MET_Version
-	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
+	mkdir $WRF_FOLDER/MET-$met_Version_number
+	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$MET_Version/Downloads
+	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
 
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$MET_VERSION/internal/scripts/installation/compile_MET_all.sh
+	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$MET_Version.tar.gz
+	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$MET_Version
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$MET_Version
-	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
-	cd $WRF_FOLDER/MET-$MET_Version
+	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	# Installation of Model Evaluation Tools
 	export CC=gcc
@@ -413,7 +413,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	export F77=gfortran
 	export CFLAGS="-fPIC -fPIE -O3"
 
-	cd $WRF_FOLDER/MET-$MET_Version
+	cd $WRF_FOLDER/MET-$met_Version_number
 	export GCC_VERSION=$(gcc -dumpfullversion | awk '{print$1}')
 	export GFORTRAN_VERSION=$(gfortran -dumpfullversion | awk '{print$1}')
 	export GPLUSPLUS_VERSION=$(g++ -dumpfullversion | awk '{print$1}')
@@ -433,10 +433,10 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	export F77=/usr/bin/gfortran
 	export F90=/usr/bin/gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$MET_Version
+	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$MET_Version.tar.gz
+	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
@@ -466,7 +466,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$MET_Version/bin:$PATH
+	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
 
 	#basic Package Management for Model Evaluation Tools (METplus)
 
@@ -489,7 +489,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	# Insatlllation of Model Evaluation Tools Plus
 	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$MET_Version|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
 	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
 	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
 
@@ -534,29 +534,29 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$MET_Version
-	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
+	mkdir $WRF_FOLDER/MET-$met_Version_number
+	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$MET_Version/Downloads
+	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
 
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$MET_VERSION/internal/scripts/installation/compile_MET_all.sh
+	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$MET_Version.tar.gz
+	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$MET_Version
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$MET_Version
-	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
-	cd $WRF_FOLDER/MET-$MET_Version
+	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	# Installation of Model Evaluation Tools
 
-	cd $WRF_FOLDER/MET-$MET_Version
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(/usr/bin/python3 -V 2>&1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -570,10 +570,10 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	export F77=gfortran
 	export F90=gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$MET_Version
+	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$MET_Version.tar.gz
+	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
@@ -603,7 +603,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$MET_Version/bin:$PATH
+	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
 
 	#basic Package Management for Model Evaluation Tools (METplus)
 
@@ -626,7 +626,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	# Insatlllation of Model Evaluation Tools Plus
 	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$MET_Version|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
 	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
 	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
 
@@ -686,29 +686,29 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	mkdir $HOME/DTC
   export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$MET_Version
-	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
+	mkdir $WRF_FOLDER/MET-$met_Version_number
+	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$MET_Version/Downloads
+	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
 
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$MET_VERSION/internal/scripts/installation/compile_MET_all.sh
+	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$MET_Version.tar.gz
+	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$MET_Version
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$MET_Version
-	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
-	cd $WRF_FOLDER/MET-$MET_Version
+	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	# Installation of Model Evaluation Tools
 
-	cd $WRF_FOLDER/MET-$MET_Version
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(/opt/rh/rh-python38/root/usr/bin/python3 -V 2>&1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -722,10 +722,10 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	export F77=gfortran
 	export F90=gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$MET_Version
+	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$MET_Version.tar.gz
+	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/opt/rh/rh-python38/root/usr/
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
@@ -755,7 +755,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$MET_Version/bin:$PATH
+	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
 
 	#basic Package Management for Model Evaluation Tools (METplus)
 
@@ -778,7 +778,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	# Insatlllation of Model Evaluation Tools Plus
 	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$MET_Version|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
 	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
 	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
 
@@ -856,8 +856,8 @@ pip3.10 install python-dateutil
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$MET_Version
-	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
+	mkdir $WRF_FOLDER/MET-$met_Version_number
+	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
 
@@ -872,25 +872,25 @@ pip3.10 install python-dateutil
 	echo $PASSWD | sudo -S ln -sf /usr/local/bin/gfortran-12 /usr/local/bin/gfortran
 	echo $PASSWD | sudo -S ln -sf /usr/local/bin/python3.10 /usr/local/bin/python3
 
-	cd $WRF_FOLDER/MET-$MET_Version/Downloads
-
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$MET_VERSION/internal/scripts/installation/compile_MET_all.sh
-
-	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
-
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$MET_Version.tar.gz
-
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$MET_Version
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$MET_Version
-	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
-	cd $WRF_FOLDER/MET-$MET_Version
-
- 	gcc --version
+	gcc --version
 	g++ --version
 	gfortran --version
 	python3 --version
 
-	cd $WRF_FOLDER/MET-$MET_Version
+	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+
+	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
+
+	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+
+	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
+
+	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
+	cd $WRF_FOLDER/MET-$met_Version_number
+
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -904,10 +904,10 @@ pip3.10 install python-dateutil
 	export F77=/usr/local/bin/gfortran
 	export F90=/usr/local/bin/gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$MET_Version
+	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$MET_Version.tar.gz
+	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr/local
 	export MET_PYTHON_CC="$(python3.10-config --cflags --embed)"
@@ -915,14 +915,31 @@ pip3.10 install python-dateutil
 
 	export SET_D64BIT=FALSE
 
+	export CPU_CORE=$(sysctl -n hw.ncpu) # number of available threads on system
+	export CPU_6CORE="6"
+	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
+	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
+
+	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
+		export CPU_HALF_EVEN="2"
+	else
+		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
+	fi
+
+	echo "##########################################"
+	echo "Number of Threads being used $CPU_HALF_EVEN"
+	echo "##########################################"
+
+	echo " "
 
 	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
+	sed -i'' -e "831s/export/#export/g" compile_MET_all.sh
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$MET_Version/bin:$PATH
+	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
 
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
@@ -938,7 +955,7 @@ pip3.10 install python-dateutil
 	# Insatlllation of Model Evaluation Tools Plus
 	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$MET_Version|" defaults.conf
+	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
 	sed -i'' -e "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
 	sed -i'' -e "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
 
@@ -1016,8 +1033,8 @@ pip3.10 install python-dateutil
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$MET_Version
-	mkdir $WRF_FOLDER/MET-$MET_Version/Downloads
+	mkdir $WRF_FOLDER/MET-$met_Version_number
+	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
 
@@ -1048,20 +1065,20 @@ pip3.10 install python-dateutil
 	g++ --version
 	gfortran --version
 
-	cd $WRF_FOLDER/MET-$MET_Version/Downloads
+	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
 
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$MET_VERSION/internal/scripts/installation/compile_MET_all.sh
+	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$MET_Version.tar.gz
+	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$MET_Version
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$MET_Version
-	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
-	cd $WRF_FOLDER/MET-$MET_Version
+	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
+	cd $WRF_FOLDER/MET-$met_Version_number
 
-	cd $WRF_FOLDER/MET-$MET_Version
+	cd $WRF_FOLDER/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -1075,10 +1092,10 @@ pip3.10 install python-dateutil
 	export F77=/usr/local/bin/gfortran
 	export F90=/usr/local/bin/gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$MET_Version
+	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$MET_Version.tar.gz
+	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr/local
 	export MET_PYTHON_CC="$(python3.10-config --cflags --embed)"
@@ -1086,15 +1103,31 @@ pip3.10 install python-dateutil
 
 	export SET_D64BIT=FALSE
 
+	export CPU_CORE=$(sysctl -n hw.ncpu) # number of available threads on system
+	export CPU_6CORE="6"
+	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
+	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
 
+	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
+		export CPU_HALF_EVEN="2"
+	else
+		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
+	fi
+
+	echo "##########################################"
+	echo "Number of Threads being used $CPU_HALF_EVEN"
+	echo "##########################################"
+
+	echo " "
 
 	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
+	sed -i'' -e "831s/export/#export/g" compile_MET_all.sh
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$MET_Version/bin:$PATH
+	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
 
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
 	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
@@ -1110,7 +1143,7 @@ pip3.10 install python-dateutil
 	# Insatlllation of Model Evaluation Tools Plus
 	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$MET_Version|" defaults.conf
+	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
 	sed -i'' -e "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
 	sed -i'' -e "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
 
