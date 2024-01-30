@@ -295,23 +295,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
-	export CPU_CORE=$(nproc) # number of available threads on system
-	export CPU_6CORE="6"
-	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
-	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
-
-	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
-		export CPU_HALF_EVEN="2"
-	else
-		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
-	fi
-
-	echo "##########################################"
-	echo "Number of Threads being used $CPU_HALF_EVEN"
-	echo "##########################################"
-
-	echo " "
-
+	
 	export MAKE_ARGS="-j 4"
 
 
@@ -443,23 +427,6 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
 
-	export CPU_CORE=$(nproc) # number of available threads on system
-	export CPU_6CORE="6"
-	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
-	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
-
-	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
-		export CPU_HALF_EVEN="2"
-	else
-		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
-	fi
-
-	echo "##########################################"
-	echo "Number of Threads being used $CPU_HALF_EVEN"
-	echo "##########################################"
-
-	echo " "
-
 	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
@@ -579,23 +546,6 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
-
-	export CPU_CORE=$(nproc) # number of available threads on system
-	export CPU_6CORE="6"
-	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
-	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
-
-	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
-		export CPU_HALF_EVEN="2"
-	else
-		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
-	fi
-
-	echo "##########################################"
-	echo "Number of Threads being used $CPU_HALF_EVEN"
-	echo "##########################################"
-
-	echo " "
 
 	export MAKE_ARGS="-j 4"
 
@@ -731,23 +681,6 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
-
-	export CPU_CORE=$(nproc) # number of available threads on system
-	export CPU_6CORE="6"
-	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
-	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
-
-	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
-		export CPU_HALF_EVEN="2"
-	else
-		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
-	fi
-
-	echo "##########################################"
-	echo "Number of Threads being used $CPU_HALF_EVEN"
-	echo "##########################################"
-
-	echo " "
 
 	export MAKE_ARGS="-j 4"
 
@@ -915,16 +848,6 @@ pip3.10 install python-dateutil
 
 	export SET_D64BIT=FALSE
 
-	export CPU_CORE=$(sysctl -n hw.ncpu) # number of available threads on system
-	export CPU_6CORE="6"
-	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
-	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
-
-	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
-		export CPU_HALF_EVEN="2"
-	else
-		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
-	fi
 
 	echo "##########################################"
 	echo "Number of Threads being used $CPU_HALF_EVEN"
@@ -1102,23 +1025,6 @@ pip3.10 install python-dateutil
 	export MET_PYTHON_LD="$(python3.10-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 
 	export SET_D64BIT=FALSE
-
-	export CPU_CORE=$(sysctl -n hw.ncpu) # number of available threads on system
-	export CPU_6CORE="6"
-	export CPU_HALF=$(($CPU_CORE / 2))                    #half of availble cores on system
-	export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
-
-	if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
-		export CPU_HALF_EVEN="2"
-	else
-		export CPU_HALF_EVEN=$(($CPU_HALF - ($CPU_HALF % 2)))
-	fi
-
-	echo "##########################################"
-	echo "Number of Threads being used $CPU_HALF_EVEN"
-	echo "##########################################"
-
-	echo " "
 
 	export MAKE_ARGS="-j 4"
 
