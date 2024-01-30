@@ -801,33 +801,57 @@ fi
 
 if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "Intel" ]; then
 	echo "MET INSTALLING"
-	brew install wget
-	brew install git
-	brew install gcc@12
-	brew install libtool
-	brew install automake
-	brew install autoconf
-	brew install make
-	brew install m4
-	brew install java
-	brew install ksh
-
-	brew install grads
-	brew install ksh
-	brew install tcsh
-	brew install snapcraft
-	brew install python@3.10
-	brew install cmake
-	brew install xorgproto
-	brew install xorgrgb
-	brew install xauth
-	brew install curl
-	brew install flex
-	brew install byacc
-	brew install bison
-	brew install gnu-sed
-
-	pip3.10 install python-dateutil
+brew install automake
+sleep 1
+brew install autoconf
+sleep 1
+brew install bison
+sleep 1
+brew install cmake
+sleep 1
+brew install curl
+sleep 1
+brew install flex
+sleep 1
+brew install gdal
+sleep 1
+brew install gedit
+sleep 1
+brew install gcc@12
+sleep 1
+brew install gnu-sed
+sleep 1
+brew install imagemagick
+sleep 1
+brew install java
+sleep 1
+brew install ksh
+sleep 1
+brew install ksh
+sleep 1
+brew install libtool
+sleep 1
+brew install make
+sleep 1
+brew install m4
+sleep 1
+brew install python@3.10
+sleep 1
+brew install snapcraft
+sleep 1
+brew install tcsh
+sleep 1
+brew install wget
+sleep 1
+brew install xauth
+sleep 1
+brew install xorgproto
+sleep 1
+brew install xorgrgb
+sleep 1
+brew install xquartz
+sleep 1
+pip3.10 install python-dateutil
 
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
@@ -954,33 +978,57 @@ fi
 
 if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "ARM" ]; then
 	echo "MET INSTALLING"
-	brew install wget
-	brew install git
-	brew install gcc@12
-	brew install libtool
-	brew install automake
-	brew install autoconf
-	brew install make
-	brew install m4
-	brew install java
-	brew install ksh
-
-	brew install grads
-	brew install ksh
-	brew install tcsh
-	brew install snapcraft
-	brew install python@3.10
-	brew install cmake
-	brew install xorgproto
-	brew install xorgrgb
-	brew install xauth
-	brew install curl
-	brew install flex
-	brew install byacc
-	brew install bison
-	brew install gnu-sed
-
-	pip3.10 install python-dateutil
+brew install automake
+sleep 1
+brew install autoconf
+sleep 1
+brew install bison
+sleep 1
+brew install cmake
+sleep 1
+brew install curl
+sleep 1
+brew install flex
+sleep 1
+brew install gdal
+sleep 1
+brew install gedit
+sleep 1
+brew install gcc@12
+sleep 1
+brew install gnu-sed
+sleep 1
+brew install imagemagick
+sleep 1
+brew install java
+sleep 1
+brew install ksh
+sleep 1
+brew install ksh
+sleep 1
+brew install libtool
+sleep 1
+brew install make
+sleep 1
+brew install m4
+sleep 1
+brew install python@3.10
+sleep 1
+brew install snapcraft
+sleep 1
+brew install tcsh
+sleep 1
+brew install wget
+sleep 1
+brew install xauth
+sleep 1
+brew install xorgproto
+sleep 1
+brew install xorgrgb
+sleep 1
+brew install xquartz
+sleep 1
+pip3.10 install python-dateutil
 
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
