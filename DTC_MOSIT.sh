@@ -861,6 +861,11 @@ if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "Intel" ]; then
 	cp v$MET_Version.tar.gz $WRF_FOLDER/MET-$MET_Version/tar_files
 	cd $WRF_FOLDER/MET-$MET_Version
 
+ 	gcc --version
+	g++ --version
+	gfortran --version
+	python3 --version
+
 	cd $WRF_FOLDER/MET-$MET_Version
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
