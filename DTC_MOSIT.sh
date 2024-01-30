@@ -295,7 +295,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
-	
+
 	export MAKE_ARGS="-j 4"
 
 
@@ -828,7 +828,7 @@ pip3.10 install python-dateutil==2.8
 
 	chmod 775 compile_MET_all.sh
 
-	
+
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
 	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
@@ -864,8 +864,15 @@ pip3.10 install python-dateutil==2.8
 	echo 'Testing MET & METPLUS Installation.'
 	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-	export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
-	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
+	# Check if the previous command was successful
+	if [ $? -eq 0 ]; then
+	    echo "MET and METPLUS successfully installed with GNU compilers."
+	    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	else
+	    echo "Error: MET and METPLUS installation failed."
+	    # Handle the error case, e.g., exit the script or retry installation
+	    exit 1
+	fi
 fi
 
 if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "ARM" ]; then
@@ -972,7 +979,7 @@ pip3.10 install python-dateutil==2.8
 
 	chmod 775 compile_MET_all.sh
 
-	
+
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
 	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
@@ -1008,8 +1015,15 @@ pip3.10 install python-dateutil==2.8
 	echo 'Testing MET & METPLUS Installation.'
 	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-	export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
-	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
+	# Check if the previous command was successful
+	if [ $? -eq 0 ]; then
+	    echo "MET and METPLUS successfully installed with GNU compilers."
+	    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	else
+	    echo "Error: MET and METPLUS installation failed."
+	    # Handle the error case, e.g., exit the script or retry installation
+	    exit 1
+	fi
 fi
 
 #####################################BASH Script Finished##############################
