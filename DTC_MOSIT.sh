@@ -849,13 +849,7 @@ pip3.10 install python-dateutil
 	export SET_D64BIT=FALSE
 
 
-	echo "##########################################"
-	echo "Number of Threads being used $CPU_HALF_EVEN"
-	echo "##########################################"
-
-	echo " "
-
-	export MAKE_ARGS="-j 4"
+        export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
 
