@@ -828,7 +828,7 @@ pip3.10 install python-dateutil==2.8
 
 	chmod 775 compile_MET_all.sh
 
-	sed -i'' -e "831s/export/#export/g" compile_MET_all.sh
+	
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
 	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
@@ -972,7 +972,7 @@ pip3.10 install python-dateutil==2.8
 
 	chmod 775 compile_MET_all.sh
 
-	sed -i'' -e "831s/export/#export/g" compile_MET_all.sh
+	
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
 	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
