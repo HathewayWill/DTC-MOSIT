@@ -342,9 +342,20 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 
 	echo 'Testing MET & METPLUS Installation.'
 	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
-	export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
-	echo " "
-	read -r -t 5 -p "MET and METPLUS sucessfully installed with intel compilers"
+
+	# Check if the previous command was successful
+	if [ $? -eq 0 ]; then
+			echo " "
+			echo "MET and METPLUS successfully installed with GNU compilers."
+			echo " "
+			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	else
+			echo " "
+			echo "Error: MET and METPLUS installation failed."
+			echo " "
+			# Handle the error case, e.g., exit the script or retry installation
+			exit 1
+	fi
 fi
 
 if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
@@ -473,8 +484,19 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	echo 'Testing MET & METPLUS Installation.'
 	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-	export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
-	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
+	# Check if the previous command was successful
+	if [ $? -eq 0 ]; then
+			echo " "
+			echo "MET and METPLUS successfully installed with GNU compilers."
+			echo " "
+			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	else
+			echo " "
+			echo "Error: MET and METPLUS installation failed."
+			echo " "
+			# Handle the error case, e.g., exit the script or retry installation
+			exit 1
+	fi
 fi
 
 if [ "$Centos_64bit_GNU" = "1" ] ; then
@@ -593,8 +615,19 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	echo 'Testing MET & METPLUS Installation.'
 	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-	export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
-	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
+	# Check if the previous command was successful
+	if [ $? -eq 0 ]; then
+			echo " "
+			echo "MET and METPLUS successfully installed with GNU compilers."
+			echo " "
+			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	else
+			echo " "
+			echo "Error: MET and METPLUS installation failed."
+			echo " "
+			# Handle the error case, e.g., exit the script or retry installation
+			exit 1
+	fi
 fi
 
 if [ "$Centos_64bit_GNU" = "2" ] ; then
@@ -728,8 +761,19 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	echo 'Testing MET & METPLUS Installation.'
 	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-	export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
-	read -r -t 5 -p "MET and METPLUS sucessfully installed with GNU compilers."
+	# Check if the previous command was successful
+	if [ $? -eq 0 ]; then
+		  echo " "
+			echo "MET and METPLUS successfully installed with GNU compilers."
+			echo " "
+			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	else
+			echo " "
+			echo "Error: MET and METPLUS installation failed."
+			echo " "
+			# Handle the error case, e.g., exit the script or retry installation
+			exit 1
+	fi
 fi
 
 if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "Intel" ]; then
@@ -866,10 +910,14 @@ pip3.10 install python-dateutil==2.8
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-	    echo "MET and METPLUS successfully installed with GNU compilers."
+	    echo " "
+			echo "MET and METPLUS successfully installed with GNU compilers."
+			echo " "
 	    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
 	else
-	    echo "Error: MET and METPLUS installation failed."
+	    echo " "
+			echo "Error: MET and METPLUS installation failed."
+			echo " "
 	    # Handle the error case, e.g., exit the script or retry installation
 	    exit 1
 	fi
@@ -1017,10 +1065,14 @@ pip3.10 install python-dateutil==2.8
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-	    echo "MET and METPLUS successfully installed with GNU compilers."
+	    echo " "
+			echo "MET and METPLUS successfully installed with GNU compilers."
+			echo " "
 	    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
 	else
-	    echo "Error: MET and METPLUS installation failed."
+	    echo " "
+			echo "Error: MET and METPLUS installation failed."
+			echo " "
 	    # Handle the error case, e.g., exit the script or retry installation
 	    exit 1
 	fi
