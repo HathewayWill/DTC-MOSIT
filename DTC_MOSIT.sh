@@ -1,4 +1,17 @@
 #!/bin/bash
+#Conda Environment Test
+if [ -n "$CONDA_DEFAULT_ENV" ]; then
+    echo "CONDA_DEFAULT_ENV is active: $CONDA_DEFAULT_ENV"
+    echo "Turning off $CONDA_DEFAULT_ENV"
+    conda deactivate 
+    conda deactivate
+else
+    echo "CONDA_DEFAULT_ENV is not active."
+    echo "Continuing script"
+    
+fi
+
+
 export METPLUS_Version=5.1.0
 export met_Version_number=11.1.0
 export met_VERSION_number=11.1
@@ -202,7 +215,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	echo $PASSWD | sudo -S sudo apt install git
 	echo "MET INSTALLING"
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade && sudo -S apt -y autoremove
+	echo $PASSWD | sudo -S apt -y upgrade 
 
 	# download the key to system keyring; this and the following echo command are
 	# needed in order to install the Intel compilers
@@ -214,7 +227,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 
 	# this update should get the Intel package info from the Intel repository
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade && sudo -S apt -y autoremove
+	echo $PASSWD | sudo -S apt -y upgrade 
 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	# install the Intel compilers
@@ -308,7 +321,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	#Basic Package Management for Model Evaluation Tools (METplus)
 
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade && sudo -S apt -y autoremove
+	echo $PASSWD | sudo -S apt -y upgrade 
 
 	#Directory Listings for Model Evaluation Tools (METplus
 
@@ -370,7 +383,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
 	#############################basic package managment############################
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade && sudo -S apt -y autoremove
+	echo $PASSWD | sudo -S apt -y upgrade 
 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	#Downloading latest dateutil due to python3.8 running old version.
@@ -449,7 +462,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	#basic Package Management for Model Evaluation Tools (METplus)
 
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade && sudo -S apt -y autoremove
+	echo $PASSWD | sudo -S apt -y upgrade 
 
 	#Directory Listings for Model Evaluation Tools (METplus
 
