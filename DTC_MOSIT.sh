@@ -146,9 +146,12 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "ARM"
 
 fi
 
+Intel_MESSAGE="\e[91m(Intel Compilers are NOT available do to Intel LLVM Upgrade.  Please Select GNU)\e[0m"
+
 if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ]; then
 	echo "Your system is 64bit version of Debian Linux Kernal"
 	echo " "
+        echo -e "$Intel_MESSAGE"
 	while read -r -p "Which compiler do you want to use?
   -Intel
    --Please note that Hurricane WRF (HWRF) is only compatibile with Intel Compilers.
