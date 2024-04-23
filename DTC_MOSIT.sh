@@ -3,12 +3,12 @@
 if [ -n "$CONDA_DEFAULT_ENV" ]; then
     echo "CONDA_DEFAULT_ENV is active: $CONDA_DEFAULT_ENV"
     echo "Turning off $CONDA_DEFAULT_ENV"
-    conda deactivate 
+    conda deactivate
     conda deactivate
 else
     echo "CONDA_DEFAULT_ENV is not active."
     echo "Continuing script"
-    
+
 fi
 
 
@@ -70,24 +70,25 @@ if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "CentOS" ]; then
 fi
 
 if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "CentOS" ]; then
-	echo "Your system is a 64bit version of CentOS Linux Kernal"
+	echo "Your system is a 64-bit version of CentOS Linux Kernel"
 	echo " "
-	echo "Intel compilers are not compatibile with this script"
+	echo "Intel compilers are not compatible with this script"
 	echo " "
-	echo "Setting compiler to GNU"
-	export Centos_64bit_GNU=1
-fi
 
-if [ "$Centos_64bit_GNU" = "1" ]; then
+	if [ -v $Centos_64bit_GNU ]; then
+		echo "The environment variable Centos_64bit_GNU is already set."
+	else
+		echo "The environment variable Centos_64bit_GNU is not set."
+		echo "Setting compiler to GNU"
+		export Centos_64bit_GNU=1
 
-	export gcc_test_version=$(gcc -dumpversion 2>&1 | awk '{print $1}')
-	export gcc_test_version_major=$(echo $gcc_test_version | awk -F. '{print $1}')
-	export gcc_version_9="9"
-
-	if [[ $gcc_test_version_major -lt $gcc_version_9 ]]; then
-		export Centos_64bit_GNU=2
-		echo " OLD GNU FILES FOUND"
+		if [ "$(gcc -dumpversion 2>&1 | awk '{print $1}')" -lt 9 ]; then
+			export Centos_64bit_GNU=2
+			echo "OLD GNU FILES FOUND"
+		fi
 	fi
+else
+	echo "The environment variable Centos_64bit_GNU is not set."
 fi
 
 
@@ -101,8 +102,14 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "Inte
 	echo " "
 	echo "Intel compilers are not compatibile with this script"
 	echo " "
-	echo "Setting compiler to GNU"
-	export macos_64bit_GNU=1
+
+	if [ -v $macos_64bit_GNU ]; then
+		echo "The environment variable macos_64bit_GNU is already set."
+	else
+		echo "The environment variable macos_64bit_GNU is not set."
+		echo "Setting compiler to GNU"
+		export macos_64bit_GNU=1
+
 	echo " "
 	echo "Xcode Command Line Tools & Homebrew are required for this script."
 	echo " "
@@ -118,7 +125,7 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "Inte
 	eval "$(/usr/local/bin/brew shellenv)"
 
 	chsh -s /bin/bash
-
+  fi
 fi
 
 if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "ARM" ]; then
@@ -127,7 +134,14 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "ARM"
 	echo "Intel compilers are not compatibile with this script"
 	echo " "
 	echo "Setting compiler to GNU"
-	export macos_64bit_GNU=1
+
+	if [ -v $macos_64bit_GNU ]; then
+		echo "The environment variable macos_64bit_GNU is already set."
+	else
+		echo "The environment variable macos_64bit_GNU is not set."
+		export macos_64bit_GNU=1
+	fi
+
 	echo " "
 	echo "Xcode Command Line Tools & Homebrew are required for this script."
 	echo " "
@@ -143,46 +157,50 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "ARM"
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 
 	chsh -s /bin/bash
-
 fi
 
-Intel_MESSAGE="\e[91m(Intel Compilers are NOT available do to Intel LLVM Upgrade.  Please Select GNU)\e[0m"
+Intel_MESSAGE="\e[91m(Intel Compilers are NOT available due to Intel LLVM Upgrade.  Please Select GNU)\e[0m"
 
 if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ]; then
 	echo "Your system is 64bit version of Debian Linux Kernal"
 	echo " "
-        echo -e "$Intel_MESSAGE"
-	while read -r -p "Which compiler do you want to use?
-  -Intel
-   --Please note that Hurricane WRF (HWRF) is only compatibile with Intel Compilers.
 
-  -GNU
+	if [ -v "$Ubuntu_64bit_Intel" ]  || [ -v "$Ubuntu_64bit_GNU" ]; then
+		echo "The environment variable Ubuntu_64bit_Intel is already set."
+		else
+			echo "The environment variable Ubuntu_64bit_Intel is not set."
+                        echo -e "$Intel_MESSAGE"
+			while read -r -p "Which compiler do you want to use?
+    	-Intel
+     	--Please note that Hurricane WRF (HWRF) is only compatibile with Intel Compilers.
 
-  Please answer Intel or GNU and press enter (case sensative).
-  " yn; do
+    	-GNU
 
-		case $yn in
-		Intel)
-			echo "-------------------------------------------------- "
-			echo " "
-			echo "Intel is selected for installation"
-			export Ubuntu_64bit_Intel=1
-			break
-			;;
-		GNU)
-			echo "-------------------------------------------------- "
-			echo " "
-			echo "GNU is selected for installation"
-			export Ubuntu_64bit_GNU=1
-			break
-			;;
-		*)
-			echo " "
-			echo "Please answer Intel or GNU (case sensative)."
-			;;
+    	Please answer Intel or GNU and press enter (case sensative).
+    	" yn; do
 
-		esac
-	done
+				case $yn in
+					Intel)
+					echo " "
+					echo "Intel is selected for installation"
+					export Ubuntu_64bit_Intel=1
+					break
+					;;
+					GNU)
+					echo "-------------------------------------------------- "
+					echo " "
+					echo "GNU is selected for installation"
+					export Ubuntu_64bit_GNU=1
+					break
+					;;
+					*)
+					echo " "
+					echo "Please answer Intel or GNU (case sensative)."
+					;;
+
+				esac
+			done
+	fi
 fi
 
 if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "Linux" ]; then
@@ -192,21 +210,16 @@ fi
 
 ############################# Enter sudo users information #############################
 echo "-------------------------------------------------- "
-while true; do
-	echo " "
-	read -r -s -p "
-  Password is only save locally and will not be seen when typing.
-  Please enter your sudo password:
+if [[ -v "$PASSWD" ]]; then
+	echo "Using existing password: $PASSWD"
+  echo "-------------------------------------------------- "
+else
+	echo -e "\nPassword is only saved locally and will not be visible when typing."
+	read -r -s -p "Please enter your sudo password: " PASSWD
+fi
 
-  " yn
-	export PASSWD=$yn
-	echo "-------------------------------------------------- "
-	break
-done
+echo -e "\nBeginning Installation"
 
-echo " "
-echo "Beginning Installation"
-echo " "
 
 ############################ DTC's MET & METPLUS ##################################################
 
@@ -218,7 +231,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	echo $PASSWD | sudo -S sudo apt install git
 	echo "MET INSTALLING"
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade 
+	echo $PASSWD | sudo -S apt -y upgrade
 
 	# download the key to system keyring; this and the following echo command are
 	# needed in order to install the Intel compilers
@@ -230,7 +243,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 
 	# this update should get the Intel package info from the Intel repository
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade 
+	echo $PASSWD | sudo -S apt -y upgrade
 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	# install the Intel compilers
@@ -270,26 +283,26 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
   export WRF_FOLDER=$HOME/DTC
 
 
-	mkdir $WRF_FOLDER/MET-$met_Version_number
-	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(/opt/intel/oneapi/intelpython/latest/bin/python3 -V 2>&1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -302,7 +315,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 	export F77=ifort
 	export F90=ifort
 	export gcc_version=$(icc -dumpversion -diag-disable=10441)
-	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
+	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
 	export COMPILER=intel_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
 	export MET_TARBALL=v$met_Version_number.tar.gz
@@ -319,52 +332,52 @@ if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH #Add MET executables to path
+	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH #Add MET executables to path
 
 	#Basic Package Management for Model Evaluation Tools (METplus)
 
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade 
+	echo $PASSWD | sudo -S apt -y upgrade
 
 	#Directory Listings for Model Evaluation Tools (METplus
 
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Output
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading METplus and untarring files
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C $WRF_FOLDER
+	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
 	# Insatlllation of Model Evaluation Tools Plus
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
-	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
 
 	# Downloading Sample Data
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
+	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
 	# Testing if installation of MET & METPlus was sucessfull
 	# If you see in terminal "METplus has successfully finished running."
 	# Then MET & METPLUS is sucessfully installed
 
 	echo 'Testing MET & METPLUS Installation.'
-	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
 			echo " "
 			echo "MET and METPLUS successfully installed with GNU compilers."
 			echo " "
-			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
 			echo " "
 			echo "Error: MET and METPLUS installation failed."
@@ -386,7 +399,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
 	#############################basic package managment############################
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade 
+	echo $PASSWD | sudo -S apt -y upgrade
 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	#Downloading latest dateutil due to python3.8 running old version.
@@ -397,14 +410,14 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
   export WRF_FOLDER=$HOME/DTC
 
 
-	mkdir $WRF_FOLDER/MET-$met_Version_number
-	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
@@ -412,10 +425,10 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	# Installation of Model Evaluation Tools
 	export CC=gcc
@@ -424,7 +437,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	export F77=gfortran
 	export CFLAGS="-fPIC -fPIE -O3"
 
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 	export GCC_VERSION=$(gcc -dumpfullversion | awk '{print$1}')
 	export GFORTRAN_VERSION=$(gfortran -dumpfullversion | awk '{print$1}')
 	export GPLUSPLUS_VERSION=$(g++ -dumpfullversion | awk '{print$1}')
@@ -444,7 +457,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	export F77=/usr/bin/gfortran
 	export F90=/usr/bin/gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
+	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
 	export MET_TARBALL=v$met_Version_number.tar.gz
@@ -460,52 +473,52 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
+	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH
 
 	#basic Package Management for Model Evaluation Tools (METplus)
 
 	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade 
+	echo $PASSWD | sudo -S apt -y upgrade
 
 	#Directory Listings for Model Evaluation Tools (METplus
 
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Output
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading METplus and untarring files
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C $WRF_FOLDER
+	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
 	# Insatlllation of Model Evaluation Tools Plus
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
-	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
 
 	# Downloading Sample Data
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
+	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
 	# Testing if installation of MET & METPlus was sucessfull
 	# If you see in terminal "METplus has successfully finished running."
 	# Then MET & METPLUS is sucessfully installed
 
 	echo 'Testing MET & METPLUS Installation.'
-	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
 			echo " "
 			echo "MET and METPLUS successfully installed with GNU compilers."
 			echo " "
-			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
 			echo " "
 			echo "Error: MET and METPLUS installation failed."
@@ -539,14 +552,14 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$met_Version_number
-	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
@@ -554,14 +567,14 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	# Installation of Model Evaluation Tools
 
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(/usr/bin/python3 -V 2>&1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -575,7 +588,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	export F77=gfortran
 	export F90=gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
+	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
 	export MET_TARBALL=v$met_Version_number.tar.gz
@@ -591,7 +604,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
+	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH
 
 	#basic Package Management for Model Evaluation Tools (METplus)
 
@@ -600,43 +613,43 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 
 	#Directory Listings for Model Evaluation Tools (METplus
 
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Output
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading METplus and untarring files
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C $WRF_FOLDER
+	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
 	# Insatlllation of Model Evaluation Tools Plus
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
-	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
 
 	# Downloading Sample Data
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
+	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
 	# Testing if installation of MET & METPlus was sucessfull
 	# If you see in terminal "METplus has successfully finished running."
 	# Then MET & METPLUS is sucessfully installed
 
 	echo 'Testing MET & METPLUS Installation.'
-	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
 			echo " "
 			echo "MET and METPLUS successfully installed with GNU compilers."
 			echo " "
-			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
 			echo " "
 			echo "Error: MET and METPLUS installation failed."
@@ -685,14 +698,14 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	mkdir $HOME/DTC
   export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$met_Version_number
-	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading MET and untarring files
 	#Note weblinks change often update as needed.
-	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
@@ -700,14 +713,14 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	# Installation of Model Evaluation Tools
 
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(/opt/rh/rh-python38/root/usr/bin/python3 -V 2>&1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -721,7 +734,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	export F77=gfortran
 	export F90=gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
+	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
 	export MET_TARBALL=v$met_Version_number.tar.gz
@@ -737,7 +750,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
+	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH
 
 	#basic Package Management for Model Evaluation Tools (METplus)
 
@@ -746,43 +759,43 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 
 	#Directory Listings for Model Evaluation Tools (METplus
 
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Output
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading METplus and untarring files
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C $WRF_FOLDER
+	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
 	# Insatlllation of Model Evaluation Tools Plus
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
-	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
+	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
 
 	# Downloading Sample Data
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
+	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
 	# Testing if installation of MET & METPlus was sucessfull
 	# If you see in terminal "METplus has successfully finished running."
 	# Then MET & METPLUS is sucessfully installed
 
 	echo 'Testing MET & METPLUS Installation.'
-	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
 		  echo " "
 			echo "MET and METPLUS successfully installed with GNU compilers."
 			echo " "
-			export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
 			echo " "
 			echo "Error: MET and METPLUS installation failed."
@@ -824,10 +837,10 @@ pip3.10 install python-dateutil==2.8
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$met_Version_number
-	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Symlink to avoid clang conflicts with compilers
 	#default gcc path /usr/bin/gcc
@@ -845,7 +858,7 @@ pip3.10 install python-dateutil==2.8
 	gfortran --version
 	python3 --version
 
-	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
@@ -853,12 +866,12 @@ pip3.10 install python-dateutil==2.8
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -872,7 +885,7 @@ pip3.10 install python-dateutil==2.8
 	export F77=/usr/local/bin/gfortran
 	export F90=/usr/local/bin/gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
+	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
 	export MET_TARBALL=v$met_Version_number.tar.gz
@@ -891,45 +904,45 @@ pip3.10 install python-dateutil==2.8
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
+	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH
 
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Output
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading METplus and untarring files
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C $WRF_FOLDER
+	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
 	# Insatlllation of Model Evaluation Tools Plus
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
-	sed -i'' -e "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i'' -e "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
+	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+	sed -i'' -e "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+	sed -i'' -e "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
 
 	# Downloading Sample Data
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
+	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
 	# Testing if installation of MET & METPlus was sucessfull
 	# If you see in terminal "METplus has successfully finished running."
 	# Then MET & METPLUS is sucessfully installed
 
 	echo 'Testing MET & METPLUS Installation.'
-	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
 	    echo " "
 			echo "MET and METPLUS successfully installed with GNU compilers."
 			echo " "
-	    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	    export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
 	    echo " "
 			echo "Error: MET and METPLUS installation failed."
@@ -969,10 +982,10 @@ pip3.10 install python-dateutil==2.8
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
 
-	mkdir $WRF_FOLDER/MET-$met_Version_number
-	mkdir $WRF_FOLDER/MET-$met_Version_number/Downloads
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Symlink to avoid clang conflicts with compilers
 	#default gcc path /usr/bin/gcc
@@ -1001,7 +1014,7 @@ pip3.10 install python-dateutil==2.8
 	g++ --version
 	gfortran --version
 
-	cd $WRF_FOLDER/MET-$met_Version_number/Downloads
+	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
@@ -1009,12 +1022,12 @@ pip3.10 install python-dateutil==2.8
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
-	cp compile_MET_all.sh $WRF_FOLDER/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C $WRF_FOLDER/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz $WRF_FOLDER/MET-$met_Version_number/tar_files
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-	cd $WRF_FOLDER/MET-$met_Version_number
+	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -1028,7 +1041,7 @@ pip3.10 install python-dateutil==2.8
 	export F77=/usr/local/bin/gfortran
 	export F90=/usr/local/bin/gfortran
 	export gcc_version=$(gcc -dumpfullversion)
-	export TEST_BASE=$WRF_FOLDER/MET-$met_Version_number
+	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
 	export COMPILER=gnu_$gcc_version
 	export MET_SUBDIR=${TEST_BASE}
 	export MET_TARBALL=v$met_Version_number.tar.gz
@@ -1046,45 +1059,45 @@ pip3.10 install python-dateutil==2.8
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
-	export PATH=$WRF_FOLDER/MET-$met_Version_number/bin:$PATH
+	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH
 
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Output
-	mkdir $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 
 	#Downloading METplus and untarring files
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C $WRF_FOLDER
+	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
 	# Insatlllation of Model Evaluation Tools Plus
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/parm/metplus_config
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
 
-	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = $WRF_FOLDER/MET-$met_Version_number|" defaults.conf
-	sed -i'' -e "s|INPUT_BASE = /path/to|INPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i'' -e "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = $WRF_FOLDER/METplus-$METPLUS_Version/Output|" defaults.conf
+	sed -i'' -e "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+	sed -i'' -e "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+	sed -i'' -e "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
 
 	# Downloading Sample Data
 
-	cd $WRF_FOLDER/METplus-$METPLUS_Version/Downloads
+	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C $WRF_FOLDER/METplus-$METPLUS_Version/Sample_Data
+	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
 	# Testing if installation of MET & METPlus was sucessfull
 	# If you see in terminal "METplus has successfully finished running."
 	# Then MET & METPLUS is sucessfully installed
 
 	echo 'Testing MET & METPLUS Installation.'
-	$WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
 	    echo " "
 			echo "MET and METPLUS successfully installed with GNU compilers."
 			echo " "
-	    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+	    export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
 	    echo " "
 			echo "Error: MET and METPLUS installation failed."
