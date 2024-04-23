@@ -10,25 +10,49 @@ This is a BASH script that provides options to install the following DTC package
     - Windows Subsystem for Linux (Debian Distro, Ubuntu, Mint, etc)
     - Linux Fedora Distro
     - MacOS
-    - 
+      
 ### MacOS Installation
 - Make sure to download and Homebrew before moving to installation.
 > /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-
-
-### Installation
-- (Make sure to download folder into your Home Directory):
-> cd $HOME
-
+> brew install git
 
 > git clone https://github.com/HathewayWill/DTC-MOSIT.git
 
 > cd $HOME/DTC-MOSIT
 
 > chmod 775 *.sh
->
-> ./DTC_MOSIT.sh 2>&1 | tee DTC_MOSIT.log
+
+> ./DTC-MOSIT.sh 2>&1 | tee DTC_MOSIT.log
+
+### APT Installation
+- (Make sure to download folder into your Home Directory):
+> cd $HOME
+
+> sudo apt install git -y
+
+> git clone https://github.com/HathewayWill/DTC-MOSIT.git
+
+> cd $HOME/DTC-MOSIT
+
+> chmod 775 *.sh
+
+> ./DTC-MOSIT.sh 2>&1 | tee DTC_MOSIT.log
+
+
+### YUM/DNF Installation
+- (Make sure to download folder into your Home Directory):
+> cd $HOME
+
+> sudo (yum or dnf) install git -y
+
+> git clone https://github.com/HathewayWill/DTC-MOSIT.git
+
+> cd $HOME/DTC-MOSIT
+
+> chmod 775 *.sh
+
+> ./DTC-MOSIT.sh 2>&1 | tee DTC_MOSIT.log
 
 - Script will check for System Architecture Type and Storage Space requirements.
 
