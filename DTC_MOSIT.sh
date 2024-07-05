@@ -13,7 +13,7 @@ fi
 
 
 export METPLUS_Version=5.1.0
-export met_Version_number=11.1.0
+export met_Version_number=11.1.1
 export met_VERSION_number=11.1
 export METPLUS_DATA=5.1
 
@@ -226,166 +226,165 @@ echo -e "\nBeginning Installation"
 ###################################################################################################
 
 
-if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
-
-	echo $PASSWD | sudo -S sudo apt install git
-	echo "MET INSTALLING"
-	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade
-
-	# download the key to system keyring; this and the following echo command are
-	# needed in order to install the Intel compilers
-	wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB |
-		gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg >/dev/null
-
-	# add signed entry to apt sources and configure the APT client to use Intel repository:
-	echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-
-	# this update should get the Intel package info from the Intel repository
-	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade
-	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
-
-	# install the Intel compilers
-	echo $PASSWD | sudo -S apt -y install intel-basekit
-	echo $PASSWD | sudo -S apt -y install intel-hpckit
-	echo $PASSWD | sudo -S apt -y install intel-oneapi-python
-
-	echo $PASSWD | sudo -S apt -y update
-
-	# make sure some critical packages have been installed
-	which cmake pkg-config make gcc g++ gfortran
-
-	# add the Intel compiler file paths to various environment variables
-	source /opt/intel/oneapi/setvars.sh
-
-	# some of the libraries we install below need one or more of these variables
-	export CC=icc
-	export CXX=icpc
-	export FC=ifort
-	export F77=ifort
-	export F90=ifort
-	export MPIFC=mpiifort
-	export MPIF77=mpiifort
-	export MPIF90=mpiifort
-	export MPICC=mpiicc
-	export MPICXX=mpiicpc
-	export CFLAGS="-fPIC -fPIE -O3 -diag-disable=10441 "
-	export FFLAGS="-m64"
-	export FCFLAGS="-m64"
-	#########################
-
-	#Downloading latest dateutil due to python3.8 running old version.
-	pip3 install python-dateutil==2.8
-	pip3 install python-dateutil
-
-	mkdir $HOME/DTC
-  export WRF_FOLDER=$HOME/DTC
-
-
-	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
-	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
-	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
-	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
-
-	#Downloading MET and untarring files
-	#Note weblinks change often update as needed.
-	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
-	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
-
-	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
-
-	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
-
-	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
-	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
-	cd "${WRF_FOLDER}"/MET-$met_Version_number
-
-	cd "${WRF_FOLDER}"/MET-$met_Version_number
-
-	export PYTHON_VERSION=$(/opt/intel/oneapi/intelpython/latest/bin/python3 -V 2>&1 | awk '{print $2}')
-	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
-	export PYTHON_VERSION_MINOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $2}')
-	export PYTHON_VERSION_COMBINED=$PYTHON_VERSION_MAJOR_VERSION.$PYTHON_VERSION_MINOR_VERSION
-
-	export CC=icc
-	export CXX=icpc
-	export FC=ifort
-	export F77=ifort
-	export F90=ifort
-	export gcc_version=$(icc -dumpversion -diag-disable=10441)
-	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
-	export COMPILER=intel_$gcc_version
-	export MET_SUBDIR=${TEST_BASE}
-	export MET_TARBALL=v$met_Version_number.tar.gz
-	export USE_MODULES=FALSE
-	export MET_PYTHON=/opt/intel/oneapi/intelpython/python${PYTHON_VERSION_COMBINED}
-	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
-	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
-	export SET_D64BIT=FALSE
-
-	export MAKE_ARGS="-j 4"
-
-
-	chmod 775 compile_MET_all.sh
-
-	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
-
-	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH #Add MET executables to path
-
-	#Basic Package Management for Model Evaluation Tools (METplus)
-
-	echo $PASSWD | sudo -S apt -y update
-	echo $PASSWD | sudo -S apt -y upgrade
-
-	#Directory Listings for Model Evaluation Tools (METplus
-
-	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
-	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
-	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
-	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
-
-	#Downloading METplus and untarring files
-
-	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
-	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
-
-	# Insatlllation of Model Evaluation Tools Plus
-	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
-
-	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
-	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
-	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
-
-	# Downloading Sample Data
-
-	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
-	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
-	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
-
-	# Testing if installation of MET & METPlus was sucessfull
-	# If you see in terminal "METplus has successfully finished running."
-	# Then MET & METPLUS is sucessfully installed
-
-	echo 'Testing MET & METPLUS Installation.'
-	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
-
-	# Check if the previous command was successful
-	if [ $? -eq 0 ]; then
-			echo " "
-			echo "MET and METPLUS successfully installed with GNU compilers."
-			echo " "
-			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
-	else
-			echo " "
-			echo "Error: MET and METPLUS installation failed."
-			echo " "
-			# Handle the error case, e.g., exit the script or retry installation
-			exit 1
-	fi
-fi
+# if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
+#
+# 	echo $PASSWD | sudo -S sudo apt install git
+# 	echo "MET INSTALLING"
+# 	echo $PASSWD | sudo -S apt -y update
+# 	echo $PASSWD | sudo -S apt -y upgrade
+#
+# 	# download the key to system keyring; this and the following echo command are
+# 	# needed in order to install the Intel compilers
+# 	wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB |
+# 		gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg >/dev/null
+#
+# 	# add signed entry to apt sources and configure the APT client to use Intel repository:
+# 	echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+#
+# 	# this update should get the Intel package info from the Intel repository
+# 	echo $PASSWD | sudo -S apt -y update
+# 	echo $PASSWD | sudo -S apt -y upgrade
+# 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
+#
+# 	# install the Intel compilers
+# 	echo $PASSWD | sudo -S apt -y install intel-basekit
+# 	echo $PASSWD | sudo -S apt -y install intel-hpckit
+# 	echo $PASSWD | sudo -S apt -y install intel-oneapi-python
+#
+# 	echo $PASSWD | sudo -S apt -y update
+#
+# 	# make sure some critical packages have been installed
+# 	which cmake pkg-config make gcc g++ gfortran
+#
+# 	# add the Intel compiler file paths to various environment variables
+# 	source /opt/intel/oneapi/setvars.sh
+#
+# 	# some of the libraries we install below need one or more of these variables
+#   export CC=icx
+# 	export CXX=icpx
+# 	export FC=ifx
+# 	export F77=ifx
+# 	export F90=ifx
+# 	export MPIFC=mpiifx
+# 	export MPIF77=mpiifx
+# 	export MPIF90=mpiifx
+# 	export MPICC=mpiicx
+# 	export MPICXX=mpiicpc
+# 	export CFLAGS="-fPIC -fPIE -O3 -Wno-implicit-function-declaration -Wno-incompatible-function-pointer-types -Wno-unused-command-line-argument -Wno-deprecated-declarations -Wno-implicit-int"
+# 	export FFLAGS="-m64"
+# 	export FCFLAGS="-m64"
+# 	#########################
+#
+# 	#Downloading latest dateutil due to python3.8 running old version.
+# 	pip3 install python-dateutil==2.8
+# 	pip3 install python-dateutil
+#
+# 	mkdir $HOME/DTC
+#   export WRF_FOLDER=$HOME/DTC
+#
+#
+# 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+# 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+# 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+# 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+#
+# 	#Downloading MET and untarring files
+# 	#Note weblinks change often update as needed.
+# 	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+# 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
+#
+# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+#
+# 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
+#
+# 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+# 	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+# 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+# 	cd "${WRF_FOLDER}"/MET-$met_Version_number
+#
+#
+# 	export PYTHON_VERSION=$(/opt/intel/oneapi/intelpython/latest/bin/python3 -V 2>&1 | awk '{print $2}')
+# 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
+# 	export PYTHON_VERSION_MINOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $2}')
+# 	export PYTHON_VERSION_COMBINED=$PYTHON_VERSION_MAJOR_VERSION.$PYTHON_VERSION_MINOR_VERSION
+#
+#   export CC=icx
+# 	export CXX=icpx
+# 	export FC=ifx
+# 	export F77=ifx
+# 	export F90=ifx
+# 	export gcc_version=$(icx -dumpversion)
+# 	export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
+# 	export COMPILER=intel_$gcc_version
+# 	export MET_SUBDIR=${TEST_BASE}
+# 	export MET_TARBALL=v$met_Version_number.tar.gz
+# 	export USE_MODULES=FALSE
+# 	export MET_PYTHON=/opt/intel/oneapi/intelpython/python${PYTHON_VERSION_COMBINED}
+# 	export MET_PYTHON_CC="-I ${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
+# 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
+# 	export SET_D64BIT=FALSE
+#
+# 	export MAKE_ARGS="-j 4"
+#
+#
+# 	chmod 775 compile_MET_all.sh
+#
+# 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
+#
+# 	export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH #Add MET executables to path
+#
+# 	#Basic Package Management for Model Evaluation Tools (METplus)
+#
+# 	echo $PASSWD | sudo -S apt -y update
+# 	echo $PASSWD | sudo -S apt -y upgrade
+#
+# 	#Directory Listings for Model Evaluation Tools (METplus
+#
+# 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+# 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+# 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+# 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+#
+# 	#Downloading METplus and untarring files
+#
+# 	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+# 	wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
+# 	tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+#
+# 	# Insatlllation of Model Evaluation Tools Plus
+# 	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
+#
+# 	sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+# 	sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+# 	sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
+#
+# 	# Downloading Sample Data
+#
+# 	cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper-$METPLUS_DATA.tgz
+# 	tar -xvzf sample_data-met_tool_wrapper-$METPLUS_DATA.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+#
+# 	# Testing if installation of MET & METPlus was sucessfull
+# 	# If you see in terminal "METplus has successfully finished running."
+# 	# Then MET & METPLUS is sucessfully installed
+#
+# 	echo 'Testing MET & METPLUS Installation.'
+# 	"${WRF_FOLDER}"/METplus-$METPLUS_Version/ush/run_metplus.py -c "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+#
+# 	# Check if the previous command was successful
+# 	if [ $? -eq 0 ]; then
+# 			echo " "
+# 			echo "MET and METPLUS successfully installed with GNU compilers."
+# 			echo " "
+# 			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
+# 	else
+# 			echo " "
+# 			echo "Error: MET and METPLUS installation failed."
+# 			echo " "
+# 			# Handle the error case, e.g., exit the script or retry installation
+# 			exit 1
+# 	fi
+# fi
 
 if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 
@@ -463,7 +462,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr
-	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
+	export MET_PYTHON_CC="-I ${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
 
@@ -594,7 +593,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr
-	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
+	export MET_PYTHON_CC="-I ${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
 
@@ -740,7 +739,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	export MET_TARBALL=v$met_Version_number.tar.gz
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/opt/rh/rh-python38/root/usr/
-	export MET_PYTHON_CC="$(python3-config --cflags --embed)"
+	export MET_PYTHON_CC="-I ${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
 
@@ -871,7 +870,6 @@ pip3.10 install python-dateutil==2.8
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
@@ -1027,7 +1025,6 @@ pip3.10 install python-dateutil==2.8
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')

@@ -1,8 +1,8 @@
 ### DTC Suite Multi Operational System Install Toolkit
 This is a BASH script that provides options to install the following DTC packages in 64-bit systems:
 
-- MET v11.1.0
-- METplus v5.1
+- MET v11.1.1
+- METplus v5.1.0
 ---
 ### System Requirements
 - 64-bit system
@@ -10,7 +10,7 @@ This is a BASH script that provides options to install the following DTC package
     - Windows Subsystem for Linux (Debian Distro, Ubuntu, Mint, etc)
     - Linux Fedora Distro
     - MacOS
-      
+
 ### MacOS Installation
 - Make sure to download and Homebrew before moving to installation.
 > /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -58,10 +58,8 @@ This is a BASH script that provides options to install the following DTC package
 
 --
 
-  ##### *** Tested on Ubuntu 20.04.6 LTS,  Ubuntu 22.04.3 LTS, MacOS Ventura, MacOS Sonoma, Centos7, Rocky Linux 9, Windows Sub-Linux Ubuntu***
+  ##### *** Tested on Ubuntu 22.04.4 LTS, Ubuntu 24.04.1 LTS, MacOS Ventura, MacOS Sonoma, Centos7, Rocky Linux 9, Windows Sub-Linux Ubuntu***
 - Built 64-bit system.
-
----
 
 ---
 #### Estimated Run Time ~ 10 to 30 Minutes @ 10mbps download speed.
@@ -73,4 +71,4 @@ This is a BASH script that provides options to install the following DTC package
 - DTC's Julie P., Tara J., George M., & John H.
 ---
 #### Citation:
-#### Hatheway, W. (2023). DTC MET Multi Operational System Install Toolkit (Version 1.1) [Computer software]
+#### Hatheway, W. (2024). DTC MET Multi Operational System Install Toolkit (Version 1.2) [Computer software]
