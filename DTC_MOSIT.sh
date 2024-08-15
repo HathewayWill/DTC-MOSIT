@@ -402,8 +402,8 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	#Downloading latest dateutil due to python3.8 running old version.
-	pip3 install python-dateutil==2.8
-	pip3 install python-dateutil
+  pip3 install python-dateutil==2.8 --break-system-packages
+  pip3 install python-dateutil --break-system-packages
 
 	mkdir $HOME/DTC
   export WRF_FOLDER=$HOME/DTC
