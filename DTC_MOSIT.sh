@@ -402,8 +402,8 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	#Downloading latest dateutil due to python3.8 running old version.
-  pip3 install python-dateutil==2.8 --break-system-packages
-  pip3 install python-dateutil --break-system-packages
+echo $PASSWD | sudo -S apt -y install python3-dateutil
+
 
 	mkdir $HOME/DTC
   export WRF_FOLDER=$HOME/DTC
@@ -542,7 +542,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	echo $PASSWD | sudo -S dnf -y update
 	echo $PASSWD | sudo -S dnf -y upgrade
 	echo $PASSWD | sudo -S dnf -y install autoconf automake bzip2 bzip2-devel byacc cairo-devel cmake cpp curl curl-devel flex flex-devel fontconfig-devel fontconfig-devel.x86_64 gcc gcc-c++ gcc-gfortran git java-11-openjdk java-11-openjdk-devel ksh libX11-devel libX11-devel.x86_64 libXaw libXaw-devel libXext-devel libXext-devel.x86_64 libXmu-devel libXrender-devel libXrender-devel.x86_64 libstdc++ libstdc++-devel libstdc++-static libxml2 libxml2-devel m4 mlocate mlocate.x86_64 nfs-utils okular perl pkgconfig pixman-devel python3 python3-devel tcsh time unzip wget
-	pip3 install python-dateutil
+	echo $PASSWD | sudo -S apt -y install python3-dateutil
 	echo $PASSWD | sudo -S dnf -y groupinstall "Development Tools"
 	echo $PASSWD | sudo -S dnf -y update
 	echo $PASSWD | sudo -S dnf -y upgrade
@@ -676,7 +676,8 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	echo $PASSWD | sudo -S dnf -y update
 	echo $PASSWD | sudo -S dnf -y upgrade
 	echo $PASSWD | sudo -S dnf -y install autoconf automake bzip2 bzip2-devel byacc cairo-devel cmake cpp curl curl-devel flex flex-devel fontconfig-devel fontconfig-devel.x86_64 gcc gcc-c++ gcc-gfortran git java-11-openjdk java-11-openjdk-devel ksh libX11-devel libX11-devel.x86_64 libXaw libXaw-devel libXext-devel libXext-devel.x86_64 libXmu-devel libXrender-devel libXrender-devel.x86_64 libstdc++ libstdc++-devel libstdc++-static libxml2 libxml2-devel m4 mlocate mlocate.x86_64 nfs-utils okular perl pkgconfig pixman-devel python3 python3-devel tcsh time unzip wget
-	echo $PASSWD | sudo -S pip3 install python-dateutil
+	echo $PASSWD | sudo -S apt -y install python3-dateutil
+
 	echo $PASSWD | sudo -S dnf -y groupinstall "Development Tools"
 	echo $PASSWD | sudo -S dnf -y update
 	echo $PASSWD | sudo -S dnf -y upgrade
@@ -693,7 +694,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	echo $PASSWD | sudo -S yum install rh-python38* -y
 	source /opt/rh/rh-python38/enable
 	python3 -V
-	echo $PASSWD | sudo echo $PASSWD | sudo -S ./opt/rh/rh-python38/root/bin/pip3.8 install python-dateutil
+	echo $PASSWD | sudo -S apt -y install python3-dateutil
 	mkdir $HOME/DTC
   export WRF_FOLDER=$HOME/DTC
 
@@ -829,8 +830,7 @@ for pkg in "${packages[@]}"; do
 done
 
 # Install python-dateutil using pip
-pip3.10 install python-dateutil
-pip3.10 install python-dateutil==2.8
+echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 
 	mkdir $HOME/DTC
@@ -974,8 +974,8 @@ for pkg in "${packages[@]}"; do
 done
 
 # Install python-dateutil using pip
-pip3.10 install python-dateutil
-pip3.10 install python-dateutil==2.8
+echo $PASSWD | sudo -S apt -y install python3-dateutil
+
 
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
