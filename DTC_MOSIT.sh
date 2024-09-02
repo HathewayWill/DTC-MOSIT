@@ -209,16 +209,34 @@ if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "Linux" ]; then
 fi
 
 ############################# Enter sudo users information #############################
-echo "-------------------------------------------------- "
-if [[ -v "$PASSWD" ]]; then
-	echo "Using existing password: $PASSWD"
-  echo "-------------------------------------------------- "
+echo "--------------------------------------------------"
+if [[ -n "$PASSWD" ]]; then
+    echo "Using existing password: $PASSWD"
+    echo "--------------------------------------------------"
 else
-	echo -e "\nPassword is only saved locally and will not be visible when typing."
-	read -r -s -p "Please enter your sudo password: " PASSWD
+    while true; do
+        echo -e "\nPassword is only saved locally and will not be seen when typing."
+        # Prompt for the initial password
+        read -r -s -p "Please enter your sudo password: " password1
+        echo -e "\nPlease re-enter your password to verify:"
+        # Prompt for password verification
+        read -r -s password2
+
+        # Check if the passwords match
+        if [[ "$password1" == "$password2" ]]; then
+            export PASSWD=$password1
+            echo -e "\n--------------------------------------------------"
+            echo "Password verified successfully."
+            break
+        else
+            echo -e "\n--------------------------------------------------"
+            echo "Passwords do not match. Please enter the passwords again."
+            echo "--------------------------------------------------"
+        fi
+    done
+    echo -e "\nBeginning Installation\n"
 fi
 
-echo -e "\nBeginning Installation"
 
 
 ############################ DTC's MET & METPLUS ##################################################
