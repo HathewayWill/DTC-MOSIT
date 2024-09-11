@@ -52,7 +52,7 @@ This is a BASH script that provides options to install the following DTC package
 
 > chmod 775 *.sh
 
-> ./DTC-MOSIT.sh 2>&1 | tee DTC_MOSIT.log
+> ./DTC_MOSIT.sh 2>&1 | tee DTC_MOSIT.log
 
 - Script will check for System Architecture Type and Storage Space requirements.
 
