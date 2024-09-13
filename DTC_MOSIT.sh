@@ -1,5 +1,6 @@
 #!/bin/bash
-#Conda Environment Test
+
+# Conda Environment Test
 if [ -n "$CONDA_DEFAULT_ENV" ]; then
     echo "CONDA_DEFAULT_ENV is active: $CONDA_DEFAULT_ENV"
     echo "Turning off $CONDA_DEFAULT_ENV"
@@ -8,204 +9,222 @@ if [ -n "$CONDA_DEFAULT_ENV" ]; then
 else
     echo "CONDA_DEFAULT_ENV is not active."
     echo "Continuing script"
-
 fi
 
-
+# Exporting versions for MET and METPLUS
 export METPLUS_Version=5.1.0
 export met_Version_number=11.1.1
 export met_VERSION_number=11.1
 export METPLUS_DATA=5.1
 
-
-
+# Capture the start time for logging or performance measurement
 start=$(date)
 START=$(date +"%s")
 
 ############################### System Architecture Type #################
-# 32 or 64 bit
+# Determine if the system is 32 or 64-bit based on the architecture
 ##########################################################################
 export SYS_ARCH=$(uname -m)
 
 if [ "$SYS_ARCH" = "x86_64" ] || [ "$SYS_ARCH" = "arm64" ]; then
-	export SYSTEMBIT="64"
+    export SYSTEMBIT="64"
 else
-	export SYSTEMBIT="32"
+    export SYSTEMBIT="32"
 fi
 
+# Determine the chip type if on macOS (ARM or Intel)
 if [ "$SYS_ARCH" = "arm64" ]; then
-	export MAC_CHIP="ARM"
+    export MAC_CHIP="ARM"
 else
-	export MAC_CHIP="Intel"
+    export MAC_CHIP="Intel"
 fi
 
 ############################# System OS Version #############################
-# Macos or linux
-# Make note that this script only works for Debian Linux kernals
+# Detect if the OS is macOS or Linux
 #############################################################################
 export SYS_OS=$(uname -s)
 
 if [ "$SYS_OS" = "Darwin" ]; then
-	export SYSTEMOS="MacOS"
+    export SYSTEMOS="MacOS"
+    # Get the macOS version using sw_vers
+    export MACOS_VERSION=$(sw_vers -productVersion)
+    echo "Operating system detected: MacOS, Version: $MACOS_VERSION"
 elif [ "$SYS_OS" = "Linux" ]; then
-	export SYSTEMOS="Linux"
+    export SYSTEMOS="Linux"
 fi
 
-########## Centos Test #############
+########## CentOS and Linux Distribution Detection #############
+# More accurate Linux distribution detection using /etc/os-release
+#################################################################
 if [ "$SYSTEMOS" = "Linux" ]; then
-	export YUM=$(command -v yum)
-	if [ "$YUM" != "" ]; then
-		echo " yum found"
-		echo "Your system is a CentOS based system"
-		export SYSTEMOS=CentOSS
-	fi
+    if [ -f /etc/os-release ]; then
+        # Extract the distribution name and version from /etc/os-release
+        export DISTRO_NAME=$(grep -w "NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+        export DISTRO_VERSION=$(grep -w "VERSION_ID" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+        
+        echo "Operating system detected: $DISTRO_NAME, Version: $DISTRO_VERSION"
 
+        # Check if the system is CentOS
+        if grep -q "CentOS" /etc/os-release; then
+            export SYSTEMOS="CentOS"
+        fi
+    else
+        echo "Unable to detect the Linux distribution version."
+    fi
 fi
+
+# Print the final detected OS
+echo "Final operating system detected: $SYSTEMOS"
 
 ############################### Intel or GNU Compiler Option #############
 
-if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "CentOS" ]; then
-	echo "Your system is not compatibile with this script."
-	exit
+# Only proceed with CentOS-specific logic if the system is CentOS
+if [ "$SYSTEMOS" = "CentOS" ]; then
+    # Check for 32-bit CentOS system
+    if [ "$SYSTEMBIT" = "32" ]; then
+        echo "Your system is not compatible with this script."
+        exit
+    fi
+
+    # Check for 64-bit CentOS system
+    if [ "$SYSTEMBIT" = "64" ]; then
+        echo "Your system is a 64-bit version of CentOS Linux Kernel."
+        echo ""
+        echo "Intel compilers are not compatible with this script."
+        echo ""
+
+        # Check if Centos_64bit_GNU environment variable is set
+        if [ -v Centos_64bit_GNU ]; then
+            echo "The environment variable Centos_64bit_GNU is already set."
+        else
+            echo "The environment variable Centos_64bit_GNU is not set."
+            echo "Setting compiler to GNU."
+            export Centos_64bit_GNU=1
+
+            # Check GNU version
+            if [ "$(gcc -dumpversion 2>&1 | awk '{print $1}')" -lt 9 ]; then
+                export Centos_64bit_GNU=2
+                echo "OLD GNU FILES FOUND."
+            fi
+        fi
+    fi
 fi
 
-if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "CentOS" ]; then
-	echo "Your system is a 64-bit version of CentOS Linux Kernel"
-	echo " "
-	echo "Intel compilers are not compatible with this script"
-	echo " "
-
-	if [ -v $Centos_64bit_GNU ]; then
-		echo "The environment variable Centos_64bit_GNU is already set."
-	else
-		echo "The environment variable Centos_64bit_GNU is not set."
-		echo "Setting compiler to GNU"
-		export Centos_64bit_GNU=1
-
-		if [ "$(gcc -dumpversion 2>&1 | awk '{print $1}')" -lt 9 ]; then
-			export Centos_64bit_GNU=2
-			echo "OLD GNU FILES FOUND"
-		fi
-	fi
-else
-	echo "The environment variable Centos_64bit_GNU is not set."
-fi
-
-
-if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "MacOS" ]; then
-	echo "Your system is not compatibile with this script."
-	exit
-fi
-
-if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "Intel" ]; then
-	echo "Your system is a 64bit version of MacOS"
-	echo " "
-	echo "Intel compilers are not compatibile with this script"
-	echo " "
-
-	if [ -v $macos_64bit_GNU ]; then
-		echo "The environment variable macos_64bit_GNU is already set."
-	else
-		echo "The environment variable macos_64bit_GNU is not set."
-		echo "Setting compiler to GNU"
-		export macos_64bit_GNU=1
-
-	echo " "
-	echo "Xcode Command Line Tools & Homebrew are required for this script."
-	echo " "
-	echo "Installing Homebrew and Xcode Command Line Tools now"
-	echo " "
-	echo "Please enter password when prompted"
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
-	(
-		echo
-		echo 'eval "$(/usr/local/bin/brew shellenv)"'
-	) >>~/.profile
-	eval "$(/usr/local/bin/brew shellenv)"
-
-	chsh -s /bin/bash
-  fi
-fi
-
-if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "ARM" ]; then
-	echo "Your system is a 64bit version of MacOS with arm64"
-	echo " "
-	echo "Intel compilers are not compatibile with this script"
-	echo " "
-	echo "Setting compiler to GNU"
-
-	if [ -v $macos_64bit_GNU ]; then
-		echo "The environment variable macos_64bit_GNU is already set."
-	else
-		echo "The environment variable macos_64bit_GNU is not set."
-		export macos_64bit_GNU=1
-	fi
-
-	echo " "
-	echo "Xcode Command Line Tools & Homebrew are required for this script."
-	echo " "
-	echo "Installing Homebrew and Xcode Command Line Tools now"
-	echo " "
-	echo "Please enter password when prompted"
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
-	(
-		echo
-		echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
-	) >>~/.profile
-	eval "$(/opt/homebrew/bin/brew shellenv)"
-
-	chsh -s /bin/bash
-fi
-
-Intel_MESSAGE="\e[91m(Intel Compilers are NOT available due to Intel LLVM Upgrade.  Please Select GNU)\e[0m"
-
+# Check for 64-bit Linux system (Debian/Ubuntu)
 if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ]; then
-	echo "Your system is 64bit version of Debian Linux Kernal"
-	echo " "
+    echo "Your system is a 64-bit version of Debian Linux Kernel."
+    echo ""
 
-	if [ -v "$Ubuntu_64bit_Intel" ]  || [ -v "$Ubuntu_64bit_GNU" ]; then
-		echo "The environment variable Ubuntu_64bit_Intel is already set."
-		else
-			echo "The environment variable Ubuntu_64bit_Intel is not set."
-                        echo -e "$Intel_MESSAGE"
-			while read -r -p "Which compiler do you want to use?
-    	-Intel
-     	--Please note that Hurricane WRF (HWRF) is only compatibile with Intel Compilers.
+    # Check if Ubuntu_64bit_Intel or Ubuntu_64bit_GNU environment variables are set
+    if [ -v "$Ubuntu_64bit_Intel" ] || [ -v "$Ubuntu_64bit_GNU" ]; then
+        echo "The environment variable Ubuntu_64bit_Intel/GNU is already set."
+    else
+        echo "The environment variable Ubuntu_64bit_Intel/GNU is not set."
+        Intel_MESSAGE="\e[91m(Intel Compilers are NOT available due to Intel LLVM Upgrade. Please Select GNU)\e[0m"
+        echo -e "$Intel_MESSAGE"
 
-    	-GNU
-
-    	Please answer Intel or GNU and press enter (case sensative).
-    	" yn; do
-
-				case $yn in
-					Intel)
-					echo " "
-					echo "Intel is selected for installation"
-					export Ubuntu_64bit_Intel=1
-					break
-					;;
-					GNU)
-					echo "-------------------------------------------------- "
-					echo " "
-					echo "GNU is selected for installation"
-					export Ubuntu_64bit_GNU=1
-					break
-					;;
-					*)
-					echo " "
-					echo "Please answer Intel or GNU (case sensative)."
-					;;
-
-				esac
-			done
-	fi
+        # Prompt user to select a compiler (Intel or GNU)
+        while read -r -p "Which compiler do you want to use? 
+        - Intel
+        - GNU
+        Please answer Intel or GNU and press enter (case-sensitive): " yn; do
+            case $yn in
+                Intel)
+                    echo ""
+                    echo "Intel is selected for installation."
+                    export Ubuntu_64bit_Intel=1
+                    break
+                    ;;
+                GNU)
+                    echo "--------------------------------------------------"
+                    echo ""
+                    echo "GNU is selected for installation."
+                    export Ubuntu_64bit_GNU=1
+                    break
+                    ;;
+                *)
+                    echo ""
+                    echo "Please answer Intel or GNU (case-sensitive)."
+                    ;;
+            esac
+        done
+    fi
 fi
 
+# Check for 32-bit Linux system
 if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "Linux" ]; then
-	echo "Your system is not compatibile with this script."
-	exit
+    echo "Your system is not compatible with this script."
+    exit
+fi
+
+############################# macOS Handling ##############################
+
+# Check for 32-bit MacOS system
+if [ "$SYSTEMBIT" = "32" ] && [ "$SYSTEMOS" = "MacOS" ]; then
+    echo "Your system is not compatible with this script."
+    exit
+fi
+
+# Check for 64-bit Intel-based MacOS system
+if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "Intel" ]; then
+    echo "Your system is a 64-bit version of macOS with an Intel chip."
+    echo ""
+    echo "Intel compilers are not compatible with this script."
+    echo "Setting compiler to GNU..."
+
+    # Check if macos_64bit_GNU environment variable is set
+    if [ -v macos_64bit_GNU ]; then
+        echo "The environment variable macos_64bit_GNU is already set."
+    else
+        echo "Setting environment variable macos_64bit_GNU."
+        export macos_64bit_GNU=1
+
+        # Ensure Xcode Command Line Tools are installed
+        if ! xcode-select --print-path &>/dev/null; then
+            echo "Installing Xcode Command Line Tools..."
+            xcode-select --install
+        fi
+
+        # Install Homebrew for Intel Macs in /usr/local
+        echo "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        echo 'eval "$(/usr/local/bin/brew shellenv)"' >>~/.profile
+        eval "$(/usr/local/bin/brew shellenv)"
+
+        chsh -s /bin/bash
+    fi
+fi
+
+# Check for 64-bit ARM-based MacOS system (M1, M2 chips)
+if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "MacOS" ] && [ "$MAC_CHIP" = "ARM" ]; then
+    echo "Your system is a 64-bit version of macOS with an ARM chip (M1/M2)."
+    echo ""
+    echo "Intel compilers are not compatible with this script."
+    echo "Setting compiler to GNU..."
+
+    # Check if macos_64bit_GNU environment variable is set
+    if [ -v macos_64bit_GNU ]; then
+        echo "The environment variable macos_64bit_GNU is already set."
+    else
+        echo "Setting environment variable macos_64bit_GNU."
+        export macos_64bit_GNU=1
+
+        # Ensure Xcode Command Line Tools are installed
+        if ! xcode-select --print-path &>/dev/null; then
+            echo "Installing Xcode Command Line Tools..."
+            xcode-select --install
+        fi
+
+        # Install Homebrew for ARM Macs in /opt/homebrew
+        echo "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.profile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+
+        chsh -s /bin/bash
+    fi
 fi
 
 ############################# Enter sudo users information #############################
@@ -238,11 +257,9 @@ else
 fi
 
 
-
 ############################ DTC's MET & METPLUS ##################################################
 
 ###################################################################################################
-
 
 # if [ "$Ubuntu_64bit_Intel" = "1" ] ; then
 #
@@ -262,7 +279,7 @@ fi
 # 	# this update should get the Intel package info from the Intel repository
 # 	echo $PASSWD | sudo -S apt -y update
 # 	echo $PASSWD | sudo -S apt -y upgrade
-# 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
+# 	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs --no-install-recommends flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make  ncview okular openbox pipenv pkg-config python3 python3-dev python3-pip tcsh unzip xauth xorg time
 #
 # 	# install the Intel compilers
 # 	echo $PASSWD | sudo -S apt -y install intel-basekit
@@ -404,7 +421,7 @@ fi
 # 	fi
 # fi
 
-if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
+if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
 	echo $PASSWD | sudo -S sudo apt install git
 	echo "MET INSTALLING"
@@ -417,15 +434,13 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] ; then
 	#############################basic package managment############################
 	echo $PASSWD | sudo -S apt -y update
 	echo $PASSWD | sudo -S apt -y upgrade
-	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses5 libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make mlocate ncview okular openbox pipenv pkg-config python2 python2-dev python3 python3-dev python3-pip tcsh unzip xauth xorg time
+	echo $PASSWD | sudo -S apt -y install autoconf automake bison build-essential byacc cmake csh curl default-jdk default-jre emacs --no-install-recommends flex g++ gawk gcc gfortran git ksh libcurl4-openssl-dev libjpeg-dev libncurses6 libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev m4 make  ncview okular openbox pipenv pkg-config python3 python3-dev python3-pip tcsh unzip xauth xorg time
 
 	#Downloading latest dateutil due to python3.8 running old version.
-echo $PASSWD | sudo -S apt -y install python3-dateutil
-
+	echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	mkdir $HOME/DTC
-  export WRF_FOLDER=$HOME/DTC
-
+	export WRF_FOLDER=$HOME/DTC
 
 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
@@ -532,20 +547,20 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-			echo " "
-			echo "MET and METPLUS successfully installed with GNU compilers."
-			echo " "
-			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
+		echo " "
+		echo "MET and METPLUS successfully installed with GNU compilers."
+		echo " "
+		export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
-			echo " "
-			echo "Error: MET and METPLUS installation failed."
-			echo " "
-			# Handle the error case, e.g., exit the script or retry installation
-			exit 1
+		echo " "
+		echo "Error: MET and METPLUS installation failed."
+		echo " "
+		# Handle the error case, e.g., exit the script or retry installation
+		exit 1
 	fi
 fi
 
-if [ "$Centos_64bit_GNU" = "1" ] ; then
+if [ "$Centos_64bit_GNU" = "1" ]; then
 	export HOME=$(
 		cd
 		pwd
@@ -559,7 +574,7 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 	echo $PASSWD | sudo -S dnf install epel-release -y
 	echo $PASSWD | sudo -S dnf -y update
 	echo $PASSWD | sudo -S dnf -y upgrade
-	echo $PASSWD | sudo -S dnf -y install autoconf automake bzip2 bzip2-devel byacc cairo-devel cmake cpp curl curl-devel flex flex-devel fontconfig-devel fontconfig-devel.x86_64 gcc gcc-c++ gcc-gfortran git java-11-openjdk java-11-openjdk-devel ksh libX11-devel libX11-devel.x86_64 libXaw libXaw-devel libXext-devel libXext-devel.x86_64 libXmu-devel libXrender-devel libXrender-devel.x86_64 libstdc++ libstdc++-devel libstdc++-static libxml2 libxml2-devel m4 mlocate mlocate.x86_64 nfs-utils okular perl pkgconfig pixman-devel python3 python3-devel tcsh time unzip wget
+	echo $PASSWD | sudo -S dnf -y install autoconf automake bzip2 bzip2-devel byacc cairo-devel cmake cpp curl curl-devel flex flex-devel fontconfig-devel fontconfig-devel.x86_64 gcc gcc-c++ gcc-gfortran git java-11-openjdk java-11-openjdk-devel ksh libX11-devel libX11-devel.x86_64 libXaw libXaw-devel libXext-devel libXext-devel.x86_64 libXmu-devel libXrender-devel libXrender-devel.x86_64 libstdc++ libstdc++-devel libstdc++-static libxml2 libxml2-devel m4  .x86_64 nfs-utils okular perl pkgconfig pixman-devel python3 python3-devel tcsh time unzip wget
 	echo $PASSWD | sudo -S apt -y install python3-dateutil
 	echo $PASSWD | sudo -S dnf -y groupinstall "Development Tools"
 	echo $PASSWD | sudo -S dnf -y update
@@ -663,20 +678,20 @@ if [ "$Centos_64bit_GNU" = "1" ] ; then
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-			echo " "
-			echo "MET and METPLUS successfully installed with GNU compilers."
-			echo " "
-			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
+		echo " "
+		echo "MET and METPLUS successfully installed with GNU compilers."
+		echo " "
+		export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
-			echo " "
-			echo "Error: MET and METPLUS installation failed."
-			echo " "
-			# Handle the error case, e.g., exit the script or retry installation
-			exit 1
+		echo " "
+		echo "Error: MET and METPLUS installation failed."
+		echo " "
+		# Handle the error case, e.g., exit the script or retry installation
+		exit 1
 	fi
 fi
 
-if [ "$Centos_64bit_GNU" = "2" ] ; then
+if [ "$Centos_64bit_GNU" = "2" ]; then
 
 	echo $PASSWD | sudo -S sudo dnf install git
 
@@ -693,7 +708,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	echo $PASSWD | sudo -S dnf install epel-release -y
 	echo $PASSWD | sudo -S dnf -y update
 	echo $PASSWD | sudo -S dnf -y upgrade
-	echo $PASSWD | sudo -S dnf -y install autoconf automake bzip2 bzip2-devel byacc cairo-devel cmake cpp curl curl-devel flex flex-devel fontconfig-devel fontconfig-devel.x86_64 gcc gcc-c++ gcc-gfortran git java-11-openjdk java-11-openjdk-devel ksh libX11-devel libX11-devel.x86_64 libXaw libXaw-devel libXext-devel libXext-devel.x86_64 libXmu-devel libXrender-devel libXrender-devel.x86_64 libstdc++ libstdc++-devel libstdc++-static libxml2 libxml2-devel m4 mlocate mlocate.x86_64 nfs-utils okular perl pkgconfig pixman-devel python3 python3-devel tcsh time unzip wget
+	echo $PASSWD | sudo -S dnf -y install autoconf automake bzip2 bzip2-devel byacc cairo-devel cmake cpp curl curl-devel flex flex-devel fontconfig-devel fontconfig-devel.x86_64 gcc gcc-c++ gcc-gfortran git java-11-openjdk java-11-openjdk-devel ksh libX11-devel libX11-devel.x86_64 libXaw libXaw-devel libXext-devel libXext-devel.x86_64 libXmu-devel libXrender-devel libXrender-devel.x86_64 libstdc++ libstdc++-devel libstdc++-static libxml2 libxml2-devel m4  .x86_64 nfs-utils okular perl pkgconfig pixman-devel python3 python3-devel tcsh time unzip wget
 	echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	echo $PASSWD | sudo -S dnf -y groupinstall "Development Tools"
@@ -714,7 +729,7 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 	python3 -V
 	echo $PASSWD | sudo -S apt -y install python3-dateutil
 	mkdir $HOME/DTC
-  export WRF_FOLDER=$HOME/DTC
+	export WRF_FOLDER=$HOME/DTC
 
 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
@@ -810,46 +825,45 @@ if [ "$Centos_64bit_GNU" = "2" ] ; then
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-		  echo " "
-			echo "MET and METPLUS successfully installed with GNU compilers."
-			echo " "
-			export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
+		echo " "
+		echo "MET and METPLUS successfully installed with GNU compilers."
+		echo " "
+		export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
-			echo " "
-			echo "Error: MET and METPLUS installation failed."
-			echo " "
-			# Handle the error case, e.g., exit the script or retry installation
-			exit 1
+		echo " "
+		echo "Error: MET and METPLUS installation failed."
+		echo " "
+		# Handle the error case, e.g., exit the script or retry installation
+		exit 1
 	fi
 fi
 
-if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "Intel" ]; then
+if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "Intel" ]; then
 	echo "MET INSTALLING"
 
-# Update Homebrew and get list of outdated packages
-brew update
-outdated_packages=$(brew outdated --quiet)
+	# Update Homebrew and get list of outdated packages
+	brew update
+	outdated_packages=$(brew outdated --quiet)
 
-# List of packages to check/install
-packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc@12" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
+	# List of packages to check/install
+	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc@12" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
 
-for pkg in "${packages[@]}"; do
-    if brew list "$pkg" &>/dev/null; then
-        echo "$pkg is already installed."
-        if [[ $outdated_packages == *"$pkg"* ]]; then
-            echo "$pkg has a newer version available. Upgrading..."
-            brew upgrade "$pkg"
-        fi
-    else
-        echo "$pkg is not installed. Installing..."
-        brew install "$pkg"
-    fi
-    sleep 1
-done
+	for pkg in "${packages[@]}"; do
+		if brew list "$pkg" &>/dev/null; then
+			echo "$pkg is already installed."
+			if [[ $outdated_packages == *"$pkg"* ]]; then
+				echo "$pkg has a newer version available. Upgrading..."
+				brew upgrade "$pkg"
+			fi
+		else
+			echo "$pkg is not installed. Installing..."
+			brew install "$pkg"
+		fi
+		sleep 1
+	done
 
-# Install python-dateutil using pip
-echo $PASSWD | sudo -S apt -y install python3-dateutil
-
+	# Install python-dateutil using pip
+	echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
@@ -888,7 +902,6 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
 	export PYTHON_VERSION_MINOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $2}')
@@ -912,11 +925,9 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	export SET_D64BIT=FALSE
 
-
-        export MAKE_ARGS="-j 4"
+	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
-
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
@@ -955,45 +966,44 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-	    echo " "
-			echo "MET and METPLUS successfully installed with GNU compilers."
-			echo " "
-	    export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
+		echo " "
+		echo "MET and METPLUS successfully installed with GNU compilers."
+		echo " "
+		export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
-	    echo " "
-			echo "Error: MET and METPLUS installation failed."
-			echo " "
-	    # Handle the error case, e.g., exit the script or retry installation
-	    exit 1
+		echo " "
+		echo "Error: MET and METPLUS installation failed."
+		echo " "
+		# Handle the error case, e.g., exit the script or retry installation
+		exit 1
 	fi
 fi
 
-if [ "$macos_64bit_GNU" = "1" ]  && [ "$MAC_CHIP" = "ARM" ]; then
+if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "ARM" ]; then
 	echo "MET INSTALLING"
-# Update Homebrew and get list of outdated packages
-brew update
-outdated_packages=$(brew outdated --quiet)
+	# Update Homebrew and get list of outdated packages
+	brew update
+	outdated_packages=$(brew outdated --quiet)
 
-# List of packages to check/install
-packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc@12" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
+	# List of packages to check/install
+	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc@12" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
 
-for pkg in "${packages[@]}"; do
-    if brew list "$pkg" &>/dev/null; then
-        echo "$pkg is already installed."
-        if [[ $outdated_packages == *"$pkg"* ]]; then
-            echo "$pkg has a newer version available. Upgrading..."
-            brew upgrade "$pkg"
-        fi
-    else
-        echo "$pkg is not installed. Installing..."
-        brew install "$pkg"
-    fi
-    sleep 1
-done
+	for pkg in "${packages[@]}"; do
+		if brew list "$pkg" &>/dev/null; then
+			echo "$pkg is already installed."
+			if [[ $outdated_packages == *"$pkg"* ]]; then
+				echo "$pkg has a newer version available. Upgrading..."
+				brew upgrade "$pkg"
+			fi
+		else
+			echo "$pkg is not installed. Installing..."
+			brew install "$pkg"
+		fi
+		sleep 1
+	done
 
-# Install python-dateutil using pip
-echo $PASSWD | sudo -S apt -y install python3-dateutil
-
+	# Install python-dateutil using pip
+	echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	mkdir $HOME/DTC
 	export WRF_FOLDER=$HOME/DTC
@@ -1043,7 +1053,6 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
-
 	export PYTHON_VERSION=$(python3 -V 2>1 | awk '{print $2}')
 	export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
 	export PYTHON_VERSION_MINOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $2}')
@@ -1070,7 +1079,6 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 	export MAKE_ARGS="-j 4"
 
 	chmod 775 compile_MET_all.sh
-
 
 	time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
 
@@ -1109,16 +1117,16 @@ echo $PASSWD | sudo -S apt -y install python3-dateutil
 
 	# Check if the previous command was successful
 	if [ $? -eq 0 ]; then
-	    echo " "
-			echo "MET and METPLUS successfully installed with GNU compilers."
-			echo " "
-	    export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
+		echo " "
+		echo "MET and METPLUS successfully installed with GNU compilers."
+		echo " "
+		export PATH="${WRF_FOLDER}"/METplus-$METPLUS_Version/ush:$PATH
 	else
-	    echo " "
-			echo "Error: MET and METPLUS installation failed."
-			echo " "
-	    # Handle the error case, e.g., exit the script or retry installation
-	    exit 1
+		echo " "
+		echo "Error: MET and METPLUS installation failed."
+		echo " "
+		# Handle the error case, e.g., exit the script or retry installation
+		exit 1
 	fi
 fi
 
