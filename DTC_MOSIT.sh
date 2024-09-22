@@ -845,7 +845,7 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "Intel" ]; then
 	outdated_packages=$(brew outdated --quiet)
 
 	# List of packages to check/install
-	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc@12" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
+	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
 
 	for pkg in "${packages[@]}"; do
 		if brew list "$pkg" &>/dev/null; then
@@ -995,13 +995,16 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "Intel" ]; then
 fi
 
 if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "ARM" ]; then
-	echo "MET INSTALLING"
-	# Update Homebrew and get list of outdated packages
 	brew update
 	outdated_packages=$(brew outdated --quiet)
 
 	# List of packages to check/install
-	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc@12" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
+	packages=(
+		"autoconf" "automake" "bison" "byacc" "cmake" "curl" "flex" "gcc"
+		"gdal" "gedit" "git" "gnu-sed" "grads" "imagemagick" "java" "ksh"
+		"libtool" "m4" "make" "python@3.10" "snapcraft" "tcsh" "wget"
+		"xauth" "xorgproto" "xorgrgb" "xquartz"
+	)
 
 	for pkg in "${packages[@]}"; do
 		if brew list "$pkg" &>/dev/null; then
