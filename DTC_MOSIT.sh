@@ -357,6 +357,22 @@ fi
 # 	export MET_PYTHON_CC="-I ${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 # 	export MET_PYTHON_LD="$(python3-config --ldflags --embed) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 # 	export SET_D64BIT=FALSE
+	
+	echo "CC=$CC"
+	echo "CXX=$CXX"
+	echo "FC=$FC"
+	echo "F77=$F77"
+	echo "F90=$F90"
+	echo "gcc_version=$gcc_version"
+	echo "TEST_BASE=$TEST_BASE"
+	echo "COMPILER=$COMPILER"
+	echo "MET_SUBDIR=$MET_SUBDIR"
+	echo "MET_TARBALL=$MET_TARBALL"
+	echo "USE_MODULES=$USE_MODULES"
+	echo "MET_PYTHON=$MET_PYTHON"
+	echo "MET_PYTHON_CC=$MET_PYTHON_CC"
+	echo "MET_PYTHON_LD=$MET_PYTHON_LD"
+	echo "SET_D64BIT=$SET_D64BIT"
 #
 # 	export MAKE_ARGS="-j 4"
 #
@@ -497,6 +513,24 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
     export MET_PYTHON_CC="-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 	export MET_PYTHON_LD="$(python3-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
+	
+	echo "CC=$CC"
+	echo "CXX=$CXX"
+	echo "FC=$FC"
+	echo "F77=$F77"
+	echo "F90=$F90"
+	echo "gcc_version=$gcc_version"
+	echo "TEST_BASE=$TEST_BASE"
+	echo "COMPILER=$COMPILER"
+	echo "MET_SUBDIR=$MET_SUBDIR"
+	echo "MET_TARBALL=$MET_TARBALL"
+	echo "USE_MODULES=$USE_MODULES"
+	echo "MET_PYTHON=$MET_PYTHON"
+	echo "MET_PYTHON_CC=$MET_PYTHON_CC"
+	echo "MET_PYTHON_LD=$MET_PYTHON_LD"
+	echo "SET_D64BIT=$SET_D64BIT"
+
+	
 
 	export MAKE_ARGS="-j 4"
 
@@ -628,6 +662,22 @@ if [ "$Centos_64bit_GNU" = "1" ]; then
     export MET_PYTHON_CC="-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 	export MET_PYTHON_LD="$(python3-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
+	
+	echo "CC=$CC"
+	echo "CXX=$CXX"
+	echo "FC=$FC"
+	echo "F77=$F77"
+	echo "F90=$F90"
+	echo "gcc_version=$gcc_version"
+	echo "TEST_BASE=$TEST_BASE"
+	echo "COMPILER=$COMPILER"
+	echo "MET_SUBDIR=$MET_SUBDIR"
+	echo "MET_TARBALL=$MET_TARBALL"
+	echo "USE_MODULES=$USE_MODULES"
+	echo "MET_PYTHON=$MET_PYTHON"
+	echo "MET_PYTHON_CC=$MET_PYTHON_CC"
+	echo "MET_PYTHON_LD=$MET_PYTHON_LD"
+	echo "SET_D64BIT=$SET_D64BIT"
 
 	export MAKE_ARGS="-j 4"
 
@@ -775,6 +825,22 @@ if [ "$Centos_64bit_GNU" = "2" ]; then
     export MET_PYTHON_CC="-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
 	export MET_PYTHON_LD="$(python3-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 	export SET_D64BIT=FALSE
+	
+	echo "CC=$CC"
+	echo "CXX=$CXX"
+	echo "FC=$FC"
+	echo "F77=$F77"
+	echo "F90=$F90"
+	echo "gcc_version=$gcc_version"
+	echo "TEST_BASE=$TEST_BASE"
+	echo "COMPILER=$COMPILER"
+	echo "MET_SUBDIR=$MET_SUBDIR"
+	echo "MET_TARBALL=$MET_TARBALL"
+	echo "USE_MODULES=$USE_MODULES"
+	echo "MET_PYTHON=$MET_PYTHON"
+	echo "MET_PYTHON_CC=$MET_PYTHON_CC"
+	echo "MET_PYTHON_LD=$MET_PYTHON_LD"
+	echo "SET_D64BIT=$SET_D64BIT"
 
 	export MAKE_ARGS="-j 4"
 
@@ -845,7 +911,7 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "Intel" ]; then
 	outdated_packages=$(brew outdated --quiet)
 
 	# List of packages to check/install
-	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.10" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
+	packages=("automake" "autoconf" "bison" "cmake" "curl" "flex" "gdal" "gedit" "gcc" "gnu-sed" "imagemagick" "java" "ksh" "libtool" "make" "m4" "python@3.11" "snapcraft" "tcsh" "wget" "xauth" "xorgproto" "xorgrgb" "xquartz")
 
 	for pkg in "${packages[@]}"; do
 		if brew list "$pkg" &>/dev/null; then
@@ -936,9 +1002,25 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "Intel" ]; then
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr/local
     export MET_PYTHON_CC="-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
-	export MET_PYTHON_LD="$(python3.10-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
+	export MET_PYTHON_LD="$(python3.11-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 
 	export SET_D64BIT=FALSE
+	
+	echo "CC=$CC"
+	echo "CXX=$CXX"
+	echo "FC=$FC"
+	echo "F77=$F77"
+	echo "F90=$F90"
+	echo "gcc_version=$gcc_version"
+	echo "TEST_BASE=$TEST_BASE"
+	echo "COMPILER=$COMPILER"
+	echo "MET_SUBDIR=$MET_SUBDIR"
+	echo "MET_TARBALL=$MET_TARBALL"
+	echo "USE_MODULES=$USE_MODULES"
+	echo "MET_PYTHON=$MET_PYTHON"
+	echo "MET_PYTHON_CC=$MET_PYTHON_CC"
+	echo "MET_PYTHON_LD=$MET_PYTHON_LD"
+	echo "SET_D64BIT=$SET_D64BIT"
 
 	export MAKE_ARGS="-j 4"
 
@@ -1002,7 +1084,7 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "ARM" ]; then
 	packages=(
 		"autoconf" "automake" "bison" "byacc" "cmake" "curl" "flex" "gcc"
 		"gdal" "gedit" "git" "gnu-sed" "grads" "imagemagick" "java" "ksh"
-		"libtool" "m4" "make" "python@3.10" "snapcraft" "tcsh" "wget"
+		"libtool" "m4" "make" "python@3.11" "snapcraft" "tcsh" "wget"
 		"xauth" "xorgproto" "xorgrgb" "xquartz"
 	)
 
@@ -1118,9 +1200,25 @@ if [ "$macos_64bit_GNU" = "1" ] && [ "$MAC_CHIP" = "ARM" ]; then
 	export USE_MODULES=FALSE
 	export MET_PYTHON=/usr/local
     export MET_PYTHON_CC="-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
-	export MET_PYTHON_LD="$(python3.10-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
+	export MET_PYTHON_LD="$(python3.11-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
 
 	export SET_D64BIT=FALSE
+	
+	echo "CC=$CC"
+	echo "CXX=$CXX"
+	echo "FC=$FC"
+	echo "F77=$F77"
+	echo "F90=$F90"
+	echo "gcc_version=$gcc_version"
+	echo "TEST_BASE=$TEST_BASE"
+	echo "COMPILER=$COMPILER"
+	echo "MET_SUBDIR=$MET_SUBDIR"
+	echo "MET_TARBALL=$MET_TARBALL"
+	echo "USE_MODULES=$USE_MODULES"
+	echo "MET_PYTHON=$MET_PYTHON"
+	echo "MET_PYTHON_CC=$MET_PYTHON_CC"
+	echo "MET_PYTHON_LD=$MET_PYTHON_LD"
+	echo "SET_D64BIT=$SET_D64BIT"
 
 	export MAKE_ARGS="-j 4"
 
