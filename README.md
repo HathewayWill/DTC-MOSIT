@@ -48,7 +48,7 @@ This is a BASH script that provides options to install the following DTC package
 
 > git clone https://github.com/HathewayWill/DTC-MOSIT.git
 
-> cd $HOME/DTC-MOSIT
+> cd $HOME/DTC_MOSIT
 
 > chmod 775 *.sh
 
