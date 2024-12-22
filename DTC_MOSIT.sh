@@ -230,7 +230,7 @@ fi
 ############################# Enter sudo users information #############################
 echo "--------------------------------------------------"
 if [[ -n "$PASSWD" ]]; then
-	echo "Using existing password: $PASSWD"
+	echo "Using existing password"
 	echo "--------------------------------------------------"
 else
 	while true; do
