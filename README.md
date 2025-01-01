@@ -71,4 +71,4 @@ This is a BASH script that provides options to install the following DTC package
 - DTC's Julie P., Tara J., George M., & John H.
 ---
 #### Citation:
-#### Hatheway, W. (2024). DTC MET Multi Operational System Install Toolkit (Version 1.2) [Computer software]
+Hatheway, W., Snoun, H., ur Rehman, H. et al. WRF-MOSIT: a modular and cross-platform tool for configuring and installing the WRF model. Earth Sci Inform (2023). https://doi.org/10.1007/s12145-023-01136-y
