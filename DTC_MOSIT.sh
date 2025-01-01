@@ -12,10 +12,10 @@ else
 fi
 
 # Exporting versions for MET and METPLUS
-export METPLUS_Version=5.1.0
-export met_Version_number=11.1.1
-export met_VERSION_number=11.1
-export METPLUS_DATA=5.1
+export METPLUS_Version=6.0.0
+export met_Version_number=12.0.0
+export met_VERSION_number=12.0
+export METPLUS_DATA=6.0
 
 # Capture the start time for logging or performance measurement
 start=$(date)
@@ -230,7 +230,7 @@ fi
 ############################# Enter sudo users information #############################
 echo "--------------------------------------------------"
 if [[ -n "$PASSWD" ]]; then
-	echo "Using existing password"
+	echo "Using existing password: $PASSWD"
 	echo "--------------------------------------------------"
 else
 	while true; do
@@ -327,12 +327,12 @@ fi
 # 	cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 # 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
-# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
 
 # 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
 # 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-# 	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+# 	tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
 # 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 # 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -468,12 +468,12 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
-	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -626,12 +626,12 @@ if [ "$Centos_64bit_GNU" = "1" ]; then
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
-	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -789,12 +789,12 @@ if [ "$Centos_64bit_GNU" = "2" ]; then
 
 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
-	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
 
 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+	tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -961,12 +961,12 @@ fi
 
 # 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
-# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
 
 # 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
 # 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-# 	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+# 	tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
 # 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 # 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -1155,12 +1155,12 @@ fi
 
 # 	wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
 
-# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz
+# 	wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
 
 # 	wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
 # 	cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-# 	tar -xvzf tar_files.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+# 	tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
 # 	cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
 # 	cd "${WRF_FOLDER}"/MET-$met_Version_number
 
