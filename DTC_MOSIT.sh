@@ -68,33 +68,47 @@ fi
 
 ########## RHL and Linux Distribution Detection #############
 # More accurate Linux distribution detection using /etc/os-release
-#################################################################
+########## Linux Distribution + Package Manager Detection ##########
 if [ "$SYSTEMOS" = "Linux" ]; then
-  if [ -f /etc/os-release ]; then
-    # Extract the distribution name and version from /etc/os-release
-    export DISTRO_NAME=$(grep -w "NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
-    export DISTRO_VERSION=$(grep -w "VERSION_ID" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+  if [ -r /etc/os-release ]; then
+    . /etc/os-release
 
-    # Print the distribution name and version
+    # Human-friendly info
+    DISTRO_NAME="${NAME:-Linux}"
+    DISTRO_VERSION="${VERSION_ID:-unknown}"
     echo "Operating system detected: $DISTRO_NAME, Version: $DISTRO_VERSION"
 
-    # Check if the system is RHL based on /etc/os-release
-    if grep -q "RHL" /etc/os-release; then
-      export SYSTEMOS="RHL"
+    # Classify distro family using ID / ID_LIKE (more reliable than checking yum/dnf)
+    # We'll use SYSTEMOS values you already branch on: "RHL" or "Linux"
+    case " ${ID:-} ${ID_LIKE:-} " in
+      *" rhel "*|*" fedora "*|*" centos "*|*" rocky "*|*" almalinux "*)
+        SYSTEMOS="RHL"
+        ;;
+      *" debian "*|*" ubuntu "*)
+        SYSTEMOS="Linux"   # keep your existing "Linux" meaning Debian/Ubuntu path
+        ;;
+      *)
+        SYSTEMOS="Linux"   # unknowns fall back to generic Linux path
+        ;;
+    esac
+
+    # Choose package manager (used for installs, not OS identity)
+    if command -v dnf >/dev/null 2>&1; then
+      PKG_MGR="dnf"
+    elif command -v yum >/dev/null 2>&1; then
+      PKG_MGR="yum"
+    elif command -v apt-get >/dev/null 2>&1; then
+      PKG_MGR="apt"
+    else
+      PKG_MGR="none"
     fi
 
-    # Check if dnf or yum is installed (dnf is used on newer systems, yum on older ones)
-    if command -v dnf > /dev/null 2>&1; then
-      echo "dnf is installed."
-      export SYSTEMOS="RHL" # Set SYSTEMOS to RHL if dnf is detected
-    elif command -v yum > /dev/null 2>&1; then
-      echo "yum is installed."
-      export SYSTEMOS="RHL" # Set SYSTEMOS to RHL if yum is detected
-    else
-      echo "No package manager (dnf or yum) found."
-    fi
+    echo "Final operating system detected: $SYSTEMOS"
+    echo "Package manager detected: $PKG_MGR"
   else
-    echo "Unable to detect the Linux distribution version."
+    echo "Unable to detect the Linux distribution version (missing /etc/os-release)."
+    SYSTEMOS="Linux"
+    PKG_MGR="none"
   fi
 fi
 
@@ -410,7 +424,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  LD_LIBRARY_PATH= tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -496,7 +510,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  LD_LIBRARY_PATH= tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -509,7 +523,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  LD_LIBRARY_PATH= tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -583,7 +597,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  LD_LIBRARY_PATH= tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -683,7 +697,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  LD_LIBRARY_PATH= tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -696,7 +710,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  LD_LIBRARY_PATH= tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -763,7 +777,7 @@ if [ "$RHL_64bit_GNU" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  LD_LIBRARY_PATH= tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -868,7 +882,7 @@ if [ "$RHL_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  LD_LIBRARY_PATH= tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -881,7 +895,7 @@ if [ "$RHL_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  LD_LIBRARY_PATH= tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -965,7 +979,7 @@ if [ "$RHL_64bit_GNU" = "2" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  LD_LIBRARY_PATH= tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -1054,7 +1068,7 @@ if [ "$RHL_64bit_GNU" = "2" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  LD_LIBRARY_PATH= tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -1067,7 +1081,7 @@ if [ "$RHL_64bit_GNU" = "2" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  LD_LIBRARY_PATH= tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -1157,7 +1171,7 @@ if [ "$RHL_64bit_Intel" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  LD_LIBRARY_PATH= tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -1244,7 +1258,7 @@ if [ "$RHL_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  LD_LIBRARY_PATH= tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -1257,7 +1271,7 @@ if [ "$RHL_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  LD_LIBRARY_PATH= tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
