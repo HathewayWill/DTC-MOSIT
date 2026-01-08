@@ -45,6 +45,11 @@ else
   export SYSTEMBIT="32"
 fi
 
+# Determine if aarch64 is present
+if [ "$SYS_ARCH" = "aarch64" ]; then
+  export aarch64=1
+fi
+
 # Determine the chip type if on macOS (ARM or Intel)
 if [ "$SYS_ARCH" = "arm64" ]; then
   export MAC_CHIP="ARM"
@@ -81,23 +86,23 @@ if [ "$SYSTEMOS" = "Linux" ]; then
     # Classify distro family using ID / ID_LIKE (more reliable than checking yum/dnf)
     # We'll use SYSTEMOS values you already branch on: "RHL" or "Linux"
     case " ${ID:-} ${ID_LIKE:-} " in
-      *" rhel "*|*" fedora "*|*" centos "*|*" rocky "*|*" almalinux "*)
+      *" rhel "* | *" fedora "* | *" centos "* | *" rocky "* | *" almalinux "*)
         SYSTEMOS="RHL"
         ;;
-      *" debian "*|*" ubuntu "*)
-        SYSTEMOS="Linux"   # keep your existing "Linux" meaning Debian/Ubuntu path
+      *" debian "* | *" ubuntu "*)
+        SYSTEMOS="Linux" # keep your existing "Linux" meaning Debian/Ubuntu path
         ;;
       *)
-        SYSTEMOS="Linux"   # unknowns fall back to generic Linux path
+        SYSTEMOS="Linux" # unknowns fall back to generic Linux path
         ;;
     esac
 
     # Choose package manager (used for installs, not OS identity)
-    if command -v dnf >/dev/null 2>&1; then
+    if command -v dnf > /dev/null 2>&1; then
       PKG_MGR="dnf"
-    elif command -v yum >/dev/null 2>&1; then
+    elif command -v yum > /dev/null 2>&1; then
       PKG_MGR="yum"
-    elif command -v apt-get >/dev/null 2>&1; then
+    elif command -v apt-get > /dev/null 2>&1; then
       PKG_MGR="apt"
     else
       PKG_MGR="none"
@@ -175,7 +180,7 @@ fi
 
 # Check for 64-bit Linux system (Debian/Ubuntu)
 if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ]; then
-  echo "Your system is a 64-bit version of Debian Linux Kernel."
+  echo "Your system is a 64-bit version of Linux Kernel."
   echo ""
 
   # Check if Ubuntu_64bit_Intel or Ubuntu_64bit_GNU environment variables are set
@@ -187,8 +192,11 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ]; then
     # Prompt user to select a compiler (Intel or GNU)
     while read -r -p "Which compiler do you want to use?
             - Intel
+            -- ****GNU only for aarch64 based systems****
             -- Please note that WRF_CMAQ is only compatible with GNU Compilers
+
             - GNU
+
             Please answer Intel or GNU and press enter (case-sensitive): " yn; do
       case $yn in
         Intel)
@@ -347,8 +355,8 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   # download the key to system keyring; this and the following echo command are
   # needed in order to install the Intel compilers
-  wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB |
-    gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+  wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \
+    | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
 
   # add signed entry to apt sources and configure the APT client to use Intel repository:
   echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
@@ -424,7 +432,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH tar -xzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -510,7 +518,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH tar -xzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -523,7 +531,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH tar -xzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -547,7 +555,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   fi
 fi
 
-if [ "$Ubuntu_64bit_GNU" = "1" ]; then
+if [ "$Ubuntu_64bit_GNU" = "1" ] && [ "$aarch64" != "1" ]; then
 
   echo $PASSWD | sudo -S sudo apt install git
   echo "MET INSTALLING"
@@ -597,7 +605,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH tar -xzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -697,7 +705,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH tar -xzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -710,7 +718,194 @@ if [ "$Ubuntu_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH tar -xzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+
+  # Testing if installation of MET & METPlus was sucessfull
+  # If you see in terminal "METplus has successfully finished running."
+  # Then MET & METPLUS is sucessfully installed
+
+  echo 'Testing MET & METPLUS Installation.'
+  $WRF_FOLDER/METplus-$METPLUS_Version/ush/run_metplus.py -c $WRF_FOLDER/METplus-$METPLUS_Version/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+
+  # Check if the previous command was successful
+  if [ $? -eq 0 ]; then
+    echo " "
+    echo "MET and METPLUS successfully installed with GNU compilers."
+    echo " "
+    export PATH=$WRF_FOLDER/METplus-$METPLUS_Version/ush:$PATH
+  else
+    echo " "
+    echo "Error: MET and METPLUS installation failed."
+    echo " "
+    # Handle the error case, e.g., exit the script or retry installation
+    exit 1
+  fi
+fi
+
+if [ "$Ubuntu_64bit_GNU" = "1" ] && ["$aarch64" = "1" ]; then
+
+  echo $PASSWD | sudo -S sudo apt install git
+  echo "MET INSTALLING"
+  export HOME=$(
+    cd
+    pwd
+  )
+  #Basic Package Management for Model Evaluation Tools (MET)
+
+  #############################basic package managment############################
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
+
+  release_version=$(lsb_release -r -s)
+
+  # Compare the release version
+  if [ "$release_version" = "24.04" ]; then
+    # Install Emacs without recommended packages
+    echo $PASSWD | sudo -S apt install emacs --no-install-recommends -y
+  else
+    # Attempt to install Emacs if the release version is not 24.04
+    echo "The release version is not 24.04, attempting to install Emacs."
+    echo $PASSWD | sudo -S apt install emacs -y
+  fi
+
+  echo "$PASSWD" | sudo -S apt -y install bison build-essential byacc cmake csh curl default-jdk default-jre flex libfl-dev g++ gawk gcc gettext gfortran git ksh libcurl4-gnutls-dev libjpeg-dev libncurses6 libncursesw5-dev libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev libxml-libxml-perl m4 make ncview pipenv pkg-config python3 python3-dev python3-pip python3-dateutil tcsh unzip xauth xorg time ghostscript less libbz2-dev libc6-dev libffi-dev libgdbm-dev libopenblas-dev libreadline-dev libssl-dev libtiff-dev libgeotiff-dev tk-dev vim wget
+
+  #Downloading latest dateutil due to python3.8 running old version.
+  echo $PASSWD | sudo -S apt -y install python3-dateutil
+
+  mkdir $HOME/DTC
+  export WRF_FOLDER=$HOME/DTC
+
+  mkdir "${WRF_FOLDER}"/MET-$met_Version_number
+  mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+  mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+  mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+
+  #Downloading MET and untarring files
+  #Note weblinks change often update as needed.
+  cd "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
+
+  wget -c https://raw.githubusercontent.com/dtcenter/MET/main_v$met_VERSION_number/internal/scripts/installation/compile_MET_all.sh
+
+  wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-v$met_VERSION_number.tgz
+
+  wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
+
+  cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH tar -xzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
+  cd "${WRF_FOLDER}"/MET-$met_Version_number
+
+  # Installation of Model Evaluation Tools
+  export CC=gcc
+  export CXX=g++
+  export FC=gfortran
+  export F77=gfortran
+  export CFLAGS="-fPIC -fPIE -O3"
+
+  cd "${WRF_FOLDER}"/MET-$met_Version_number
+  export GCC_VERSION=$(gcc -dumpfullversion | awk '{print$1}')
+  export GFORTRAN_VERSION=$(gfortran -dumpfullversion | awk '{print$1}')
+  export GPLUSPLUS_VERSION=$(g++ -dumpfullversion | awk '{print$1}')
+
+  export GCC_VERSION_MAJOR_VERSION=$(echo $GCC_VERSION | awk -F. '{print $1}')
+  export GFORTRAN_VERSION_MAJOR_VERSION=$(echo $GFORTRAN_VERSION | awk -F. '{print $1}')
+  export GPLUSPLUS_VERSION_MAJOR_VERSION=$(echo $GPLUSPLUS_VERSION | awk -F. '{print $1}')
+
+  export version_10="10"
+
+  export PYTHON_VERSION=$(/usr/bin/python3 -V 2>&1 | awk '{print $2}')
+  export PYTHON_VERSION_MAJOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $1}')
+  export PYTHON_VERSION_MINOR_VERSION=$(echo $PYTHON_VERSION | awk -F. '{print $2}')
+  export PYTHON_VERSION_COMBINED=$PYTHON_VERSION_MAJOR_VERSION.$PYTHON_VERSION_MINOR_VERSION
+
+  echo "PYTHON_VERSION:               $PYTHON_VERSION"
+  echo "PYTHON_VERSION_MAJOR_VERSION: $PYTHON_VERSION_MAJOR_VERSION"
+  echo "PYTHON_VERSION_MINOR_VERSION: $PYTHON_VERSION_MINOR_VERSION"
+  echo "PYTHON_VERSION_COMBINED:      $PYTHON_VERSION_COMBINED"
+
+  # --- GCC/ version extraction ---
+  export GCC_VERSION=$(gcc -dumpfullversion)
+  export GCC_VERSION_MAJOR_VERSION=$(echo "$GCC_VERSION" | awk -F. '{print $1}')
+  export GCC_VERSION_MINOR_VERSION=$(echo "$GCC_VERSION" | awk -F. '{print $2}')
+  export GCC_VERSION_SUB_VERSION=$(echo "$GCC_VERSION" | awk -F. '{print $3}' | sed 's/[^0-9]*//g')
+  export GCC_VERSION_COMBINED="$GCC_VERSION_MAJOR_VERSION.$GCC_VERSION_MINOR_VERSION.$GCC_VERSION_SUB_VERSION"
+
+  echo "GCC_VERSION:                  $GCC_VERSION"
+  echo "GCC_VERSION_MAJOR_VERSION:    $GCC_VERSION_MAJOR_VERSION"
+  echo "GCC_VERSION_MINOR_VERSION:    $GCC_VERSION_MINOR_VERSION"
+  echo "GCC_VERSION_SUB_VERSION:      $GCC_VERSION_SUB_VERSION"
+  echo "GCC_VERSION_COMBINED:         $GCC_VERSION_COMBINED"
+
+  export FC=/usr/bin/gfortran
+  export F77=/usr/bin/gfortran
+  export F90=/usr/bin/gfortran
+  export gcc_version=$GCC_VERSION
+  export TEST_BASE="${WRF_FOLDER}"/MET-$met_Version_number
+  export COMPILER=gnu_$GCC_VERSION_COMBINED
+  export MET_SUBDIR=${TEST_BASE}
+  export MET_TARBALL=v$met_Version_number.tar.gz
+  export USE_MODULES=FALSE
+  export MET_PYTHON=/usr
+  export MET_PYTHON_CC="-I${MET_PYTHON}/include/python${PYTHON_VERSION_COMBINED}"
+  export MET_PYTHON_LD="$(python3-config --ldflags) -L${MET_PYTHON}/lib -lpython${PYTHON_VERSION_COMBINED}"
+  export SET_D64BIT=FALSE
+
+  export CPU_CORE=$(nproc) # number of available threads on system
+  export CPU_6CORE="6"
+  export CPU_QUARTER=$(($CPU_CORE / 4))                          #quarter of availble cores on system
+  export CPU_QUARTER_EVEN=$(($CPU_QUARTER - ($CPU_QUARTER % 2))) #Forces CPU cores to even number to avoid partial core export. ie 7 cores would be 3.5 cores.
+
+  if [ $CPU_CORE -le $CPU_6CORE ]; then #If statement for low core systems.  Forces computers to only use 1 core if there are 4 cores or less on the system.
+    export CPU_QUARTER_EVEN="2"
+  else
+    export CPU_QUARTER_EVEN=$(($CPU_QUARTER - ($CPU_QUARTER % 2)))
+  fi
+
+  echo "##########################################"
+  echo "Number of Threads being used $CPU_QUARTER_EVEN"
+  echo "##########################################"
+
+  echo " "
+
+  export MAKE_ARGS="-j $CPU_QUARTER_EVEN"
+
+  chmod 775 compile_MET_all.sh
+
+  time ./compile_MET_all.sh 2>&1 | tee compile_MET_all.log
+
+  export PATH="${WRF_FOLDER}"/MET-$met_Version_number/bin:$PATH
+
+  #basic Package Management for Model Evaluation Tools (METplus)
+
+  echo $PASSWD | sudo -S apt -y update
+  echo $PASSWD | sudo -S apt -y upgrade
+
+  #Directory Listings for Model Evaluation Tools (METplus
+
+  mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
+  mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output
+  mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+
+  #Downloading METplus and untarring files
+
+  cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+  wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
+  env -u LD_LIBRARY_PATH tar -xzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+
+  # Insatlllation of Model Evaluation Tools Plus
+  cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
+
+  sed -i "s|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = "${WRF_FOLDER}"/MET-$met_Version_number|" defaults.conf
+  sed -i "s|INPUT_BASE = /path/to|INPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data|" defaults.conf
+  sed -i "s|OUTPUT_BASE = /path/to|OUTPUT_BASE = "${WRF_FOLDER}"/METplus-$METPLUS_Version/Output|" defaults.conf
+
+  # Downloading Sample Data
+
+  cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
+  wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
+  env -u LD_LIBRARY_PATH tar -xzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -777,7 +972,7 @@ if [ "$RHL_64bit_GNU" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH tar -xzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -882,7 +1077,7 @@ if [ "$RHL_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH tar -xzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -895,7 +1090,7 @@ if [ "$RHL_64bit_GNU" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH tar -xzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -979,7 +1174,7 @@ if [ "$RHL_64bit_GNU" = "2" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH tar -xzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -1068,7 +1263,7 @@ if [ "$RHL_64bit_GNU" = "2" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH tar -xzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -1081,7 +1276,7 @@ if [ "$RHL_64bit_GNU" = "2" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH tar -xzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -1171,7 +1366,7 @@ if [ "$RHL_64bit_Intel" = "1" ]; then
   wget -c https://github.com/dtcenter/MET/archive/refs/tags/v$met_Version_number.tar.gz
 
   cp compile_MET_all.sh "${WRF_FOLDER}"/MET-$met_Version_number
-  env -u LD_LIBRARY_PATH  tar -xvzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
+  env -u LD_LIBRARY_PATH tar -xzf tar_files.met-v$met_VERSION_number.tgz -C "${WRF_FOLDER}"/MET-$met_Version_number
   cp v$met_Version_number.tar.gz "${WRF_FOLDER}"/MET-$met_Version_number/tar_files
   cd "${WRF_FOLDER}"/MET-$met_Version_number
 
@@ -1258,7 +1453,7 @@ if [ "$RHL_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://github.com/dtcenter/METplus/archive/refs/tags/v$METPLUS_Version.tar.gz
-  env -u LD_LIBRARY_PATH  tar -xvzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
+  env -u LD_LIBRARY_PATH tar -xzf v$METPLUS_Version.tar.gz -C "${WRF_FOLDER}"
 
   # Insatlllation of Model Evaluation Tools Plus
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/parm/metplus_config
@@ -1271,7 +1466,7 @@ if [ "$RHL_64bit_Intel" = "1" ]; then
 
   cd "${WRF_FOLDER}"/METplus-$METPLUS_Version/Downloads
   wget -c https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v$METPLUS_DATA/sample_data-met_tool_wrapper.tgz
-  env -u LD_LIBRARY_PATH  tar -xvzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
+  env -u LD_LIBRARY_PATH tar -xzf sample_data-met_tool_wrapper.tgz -C "${WRF_FOLDER}"/METplus-$METPLUS_Version/Sample_Data
 
   # Testing if installation of MET & METPlus was sucessfull
   # If you see in terminal "METplus has successfully finished running."
@@ -1304,3 +1499,18 @@ DIFF=$(($END - $START))
 echo "Install Start Time: ${start}"
 echo "Install End Time: ${end}"
 echo "Install Duration: $(($DIFF / 3600)) hours $((($DIFF % 3600) / 60)) minutes $(($DIFF % 60)) seconds"
+echo ""
+echo ""
+############################### Citation Requirement  ####################
+echo " "
+echo " The GitHub software WRF-MOSIT (Version 2.1.1) by W. Hatheway (2023)"
+echo " "
+echo "It is important to note that any usage or publication that incorporates or references this software must include a proper citation to acknowledge the work of the author."
+echo " "
+echo -e "This is not only a matter of respect and academic integrity, but also a \e[31mrequirement\e[0m set by the author. Please ensure to adhere to this guideline when using this software."
+echo " "
+echo -e "\e[31mCitation: Hatheway, W., Snoun, H., ur Rehman, H., & Mwanthi, A. WRF-MOSIT: a modular and cross-platform tool for configuring and installing the WRF model [Computer software]. https://doi.org/10.1007/s12145-023-01136-y]\e[0m"
+
+echo " "
+read -p "Press enter to continue"
+
