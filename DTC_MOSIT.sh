@@ -405,8 +405,8 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   export MPICC=mpiicx
   export MPICXX=mpiicpx
   export CFLAGS="-fPIC -fPIE -O3 -Wno-implicit-function-declaration -Wno-incompatible-function-pointer-types -Wno-unused-command-line-argument"
-  export FFLAGS="-m64"
-  export FCFLAGS="-m64"
+  export FFLAGS=""
+  export FCFLAGS=""
   export CXXFLAGS="-Wall -DHAVE_ISATTY"
   #########################
 
