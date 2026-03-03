@@ -12,10 +12,11 @@ else
 fi
 
 # Exporting versions for MET and METPLUS
-export METPLUS_Version=6.2.0
-export met_Version_number=12.2.0
+export METPLUS_Version=6.2.1
+export met_Version_number=12.2.1
 export met_VERSION_number=12.2
 export METPLUS_DATA=6.2
+
 
 # Capture the start time for logging or performance measurement
 start=$(date)
