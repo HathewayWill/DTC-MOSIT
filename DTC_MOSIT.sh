@@ -381,6 +381,7 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
   echo $PASSWD | sudo -S dnf -y install byacc bzip2 bzip2-devel cairo-devel cmake cpp curl curl-devel flex fontconfig fontconfig-devel gcc gcc-c++ gcc-gfortran git ksh libjpeg libjpeg-devel libstdc++ libstdc++-devel libX11 libX11-devel libXaw libXaw-devel libXext-devel libXmu libXmu-devel libXrender libXrender-devel libXt libXt-devel libxml2 libxml2-devel libgeotiff libgeotiff-devel libtiff libtiff-devel m4 nfs-utils perl 'perl(XML::LibXML)' pkgconfig pixman pixman-devel python3 python3-devel tcsh time unzip wget
   #
   # install the Intel compilers
+  echo $PASSWD | sudo -S apt -y install intel-oneapi-toolkit
   echo $PASSWD | sudo -S apt -y install intel-basekit
   echo $PASSWD | sudo -S apt -y install intel-hpckit
   echo $PASSWD | sudo -S apt -y install intel-oneapi-python
