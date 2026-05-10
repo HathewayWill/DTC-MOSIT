@@ -201,11 +201,13 @@ if [ "$SYSTEMBIT" = "64" ] && [ "$SYSTEMOS" = "Linux" ]; then
 			case $yn in
 			Intel)
 				echo "Intel is selected for installation."
+				unset Ubuntu_64bit_GNU
 				export Ubuntu_64bit_Intel=1
 				break
 				;;
 			GNU)
 				echo "GNU is selected for installation."
+				unset Ubuntu_64bit_Intel
 				export Ubuntu_64bit_GNU=1
 				break
 				;;
@@ -395,19 +397,19 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
 	# some of the libraries we install below need one or more of these variables
 	export CC=icx
-  	export CXX=icpx
-  	export FC=ifx
-  	export F77=ifx
-  	export F90=ifx
-  	export MPIFC=mpiifx
-  	export MPIF77=mpiifx
-  	export MPIF90=mpiifx
-  	export MPICC=mpiicx
-  	export MPICXX=mpiicpx
-  	export CFLAGS="-fPIC -fPIE -O3 -Wno-implicit-function-declaration -Wno-incompatible-function-pointer-types -Wno-unused-command-line-argument"
-  	export FFLAGS=""
-  	export FCFLAGS=""
-  	export CXXFLAGS="-Wall -DHAVE_ISATTY"
+	export CXX=icpx
+	export FC=ifx
+	export F77=ifx
+	export F90=ifx
+	export MPIFC=mpiifx
+	export MPIF77=mpiifx
+	export MPIF90=mpiifx
+	export MPICC=mpiicx
+	export MPICXX=mpiicpx
+	export CFLAGS="-fPIC -fPIE -O3 -Wno-implicit-function-declaration -Wno-incompatible-function-pointer-types -Wno-unused-command-line-argument"
+	export FFLAGS=""
+	export FCFLAGS=""
+	export CXXFLAGS="-Wall -DHAVE_ISATTY"
 	#########################
 
 	#Downloading latest dateutil due to python3.8 running old version.
@@ -581,7 +583,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] && [ "$aarch64" != "1" ]; then
 		echo $PASSWD | sudo -S apt install emacs -y
 	fi
 
-	echo "$PASSWD" | sudo -S apt -y install bison build-essential byacc cmake csh curl default-jdk default-jre flex libfl-dev g++ gawk gcc  gettext gfortran git ksh libcurl4-gnutls-dev libjpeg-dev libncurses6 libncursesw5-dev libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev libxml-libxml-perl m4 make ncview pipenv pkg-config python3 python3-dev python3-pip python3-dateutil tcsh unzip xauth xorg time ghostscript less libbz2-dev libc6-dev libffi-dev libgdbm-dev libopenblas-dev libreadline-dev libssl-dev libtiff-dev libgeotiff-dev tk-dev vim wget
+	echo "$PASSWD" | sudo -S apt -y install bison build-essential byacc cmake csh curl default-jdk default-jre flex libfl-dev g++ gawk gcc gettext gfortran git ksh libcurl4-gnutls-dev libjpeg-dev libncurses6 libncursesw5-dev libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev libxml-libxml-perl m4 make ncview pipenv pkg-config python3 python3-dev python3-pip python3-dateutil tcsh unzip xauth xorg time ghostscript less libbz2-dev libc6-dev libffi-dev libgdbm-dev libopenblas-dev libreadline-dev libssl-dev libtiff-dev libgeotiff-dev tk-dev vim wget
 
 	#Downloading latest dateutil due to python3.8 running old version.
 	echo $PASSWD | sudo -S apt -y install python3-dateutil
@@ -768,7 +770,7 @@ if [ "$Ubuntu_64bit_GNU" = "1" ] && ["$aarch64" = "1" ]; then
 		echo $PASSWD | sudo -S apt install emacs -y
 	fi
 
-	echo "$PASSWD" | sudo -S apt -y install bison build-essential byacc cmake csh curl default-jdk default-jre flex libfl-dev g++ gawk gcc  gettext gfortran git ksh libcurl4-gnutls-dev libjpeg-dev libncurses6 libncursesw5-dev libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev libxml-libxml-perl m4 make ncview pipenv pkg-config python3 python3-dev python3-pip python3-dateutil tcsh unzip xauth xorg time ghostscript less libbz2-dev libc6-dev libffi-dev libgdbm-dev libopenblas-dev libreadline-dev libssl-dev libtiff-dev libgeotiff-dev tk-dev vim wget
+	echo "$PASSWD" | sudo -S apt -y install bison build-essential byacc cmake csh curl default-jdk default-jre flex libfl-dev g++ gawk gcc gettext gfortran git ksh libcurl4-gnutls-dev libjpeg-dev libncurses6 libncursesw5-dev libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev libxml-libxml-perl m4 make ncview pipenv pkg-config python3 python3-dev python3-pip python3-dateutil tcsh unzip xauth xorg time ghostscript less libbz2-dev libc6-dev libffi-dev libgdbm-dev libopenblas-dev libreadline-dev libssl-dev libtiff-dev libgeotiff-dev tk-dev vim wget
 
 	#Downloading latest dateutil due to python3.8 running old version.
 	echo $PASSWD | sudo -S apt -y install python3-dateutil
