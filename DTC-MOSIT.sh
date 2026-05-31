@@ -350,7 +350,7 @@ echo "Beginning Installation"
 
 if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 
-	echo $PASSWD | sudo -S sudo apt install git
+	echo $PASSWD | sudo -S apt install git
 	echo "MET INSTALLING"
 	echo $PASSWD | sudo -S apt -y update
 	echo $PASSWD | sudo -S apt -y upgrade
@@ -380,6 +380,18 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 	fi
 
 	echo "$PASSWD" | sudo -S apt -y install bison build-essential byacc cmake csh curl default-jdk default-jre flex libfl-dev g++ gawk gcc gettext gfortran git ksh libcurl4-gnutls-dev libjpeg-dev libncurses6 libncursesw5-dev libpixman-1-dev libpng-dev libtool libxml2 libxml2-dev libxml-libxml-perl m4 make ncview pipenv pkg-config python3 python3-dev python3-pip python3-dateutil tcsh unzip xauth xorg time ghostscript less libbz2-dev libc6-dev libffi-dev libgdbm-dev libopenblas-dev libreadline-dev libssl-dev libtiff-dev libgeotiff-dev tk-dev vim wget
+
+	GCC_LIB_DIR="/usr/lib/gcc/x86_64-linux-gnu"
+	HIGHEST_GCC_MAJOR=$(ls "$GCC_LIB_DIR" | sort -V | tail -n 1)
+
+	echo "Highest GCC directory detected: $HIGHEST_GCC_MAJOR"
+
+	if [ ! -d "/usr/include/c++/${HIGHEST_GCC_MAJOR}" ]; then
+  	echo "Missing matching C++ headers for GCC ${HIGHEST_GCC_MAJOR}"
+  	echo "$PASSWD" | sudo -S apt -y install "g++-${HIGHEST_GCC_MAJOR}" "libstdc++-${HIGHEST_GCC_MAJOR}-dev"
+	fi
+
+
 	#
 	# install the Intel compilers
 	echo $PASSWD | sudo -S apt -y install intel-oneapi-toolkit
@@ -409,16 +421,16 @@ if [ "$Ubuntu_64bit_Intel" = "1" ]; then
 	export CFLAGS="-fPIC -fPIE -O3 -Wno-implicit-function-declaration -Wno-incompatible-function-pointer-types -Wno-unused-command-line-argument"
 	export FFLAGS=""
 	export FCFLAGS=""
-	export CXXFLAGS="-Wall -DHAVE_ISATTY"
+	export CXXFLAGS="--gcc-toolchain=/usr -Wall -DHAVE_ISATTY"
 	#########################
 
 	#Downloading latest dateutil due to python3.8 running old version.
 	pip3 install python-dateutil==2.8 --break-system-packages
 	pip3 install python-dateutil
 
-	mkdir $HOME/DTC
-	export WRF_FOLDER=$HOME/DTC
-
+	# Set WRF_FOLDER based on selected option
+	WRF_FOLDER="$HOME/DTC_Intel"
+	mkdir -p "$WRF_FOLDER"
 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number
 	mkdir "${WRF_FOLDER}"/MET-$met_Version_number/Downloads
 	mkdir "${WRF_FOLDER}"/METplus-$METPLUS_Version
